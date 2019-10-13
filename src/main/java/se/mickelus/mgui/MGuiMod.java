@@ -1,6 +1,5 @@
 package se.mickelus.mgui;
 
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -17,8 +16,5 @@ public class MGuiMod {
 
     public void setup(FMLCommonSetupEvent event) {
         System.out.println("setup event");
-
-        MinecraftForge.EVENT_BUS.register(new TestOverlayGui());
-        MinecraftForge.EVENT_BUS.register(new TestHudGui());
     }
 }
