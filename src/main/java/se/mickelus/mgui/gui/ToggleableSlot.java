@@ -5,14 +5,16 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
-public class ToggleableSlot extends Slot {
+public class ToggleableSlot extends SlotItemHandler {
 
     private boolean isEnabled = true;
     private int realX, realY;
 
-    public ToggleableSlot(IInventory inventoryIn, int index, int xPosition, int yPosition) {
-        super(inventoryIn, index, xPosition, yPosition);
+    public ToggleableSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
+        super(itemHandler, index, xPosition, yPosition);
 
         realX = xPosition;
         realY = yPosition;
