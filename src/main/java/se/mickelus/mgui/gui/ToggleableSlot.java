@@ -22,7 +22,7 @@ public class ToggleableSlot extends SlotItemHandler {
     public void toggle(boolean enabled) {
         isEnabled = enabled;
 
-//        xPos and yPos are final in class Slot.
+//        @TODO: Find a way to hide a slot, since xPos and yPos are final in class Slot.
 //        if (enabled) {
 //            xPos = realX;
 //            yPos = realY;
