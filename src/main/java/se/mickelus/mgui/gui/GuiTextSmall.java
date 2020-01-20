@@ -1,6 +1,6 @@
 package se.mickelus.mgui.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 public class GuiTextSmall extends GuiText {
 
@@ -16,9 +16,9 @@ public class GuiTextSmall extends GuiText {
 
     @Override
     public void draw(int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
-        GlStateManager.pushMatrix();
-        GlStateManager.scaled(.5, .5, .5);
+        RenderSystem.pushMatrix();
+        RenderSystem.scaled(.5, .5, .5);
         fontRenderer.drawSplitString(string, (refX + x) * 2, (refY + y) * 2, width*2, 0xffffffff);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 }

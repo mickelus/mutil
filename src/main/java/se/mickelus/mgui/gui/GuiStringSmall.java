@@ -1,7 +1,6 @@
 package se.mickelus.mgui.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-
+import com.mojang.blaze3d.systems.RenderSystem;
 import se.mickelus.mgui.gui.animation.KeyframeAnimation;
 
 public class GuiStringSmall extends GuiString {
@@ -74,12 +73,12 @@ public class GuiStringSmall extends GuiString {
         calculateFocusState(refX, refY, mouseX, mouseY);
         activeAnimations.removeIf(keyframeAnimation -> !keyframeAnimation.isActive());
         activeAnimations.forEach(KeyframeAnimation::preDraw);
-        GlStateManager.pushMatrix();
-        GlStateManager.scaled(.5, .5, .5);
-        GlStateManager.enableBlend();
+        RenderSystem.pushMatrix();
+        RenderSystem.scaled(.5, .5, .5);
+        RenderSystem.enableBlend();
         drawString(string, refX * 2 + x, refY * 2 + y,
                 color, opacity * getOpacity(), drawShadow);
-        GlStateManager.disableBlend();
-        GlStateManager.popMatrix();
+        RenderSystem.disableBlend();
+        RenderSystem.popMatrix();
     }
 }

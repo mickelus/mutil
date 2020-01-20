@@ -1,5 +1,6 @@
 package se.mickelus.mgui.gui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -52,17 +53,17 @@ public class GuiItem extends GuiElement {
     public void draw(int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         super.draw(refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.enableDepthTest();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+        RenderSystem.pushMatrix();
+        RenderSystem.enableDepthTest();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
                 GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        RenderHelper.enableGUIStandardItemLighting();
+        RenderHelper.func_227780_a_();
 
         mc.getItemRenderer().renderItemAndEffectIntoGUI(itemStack, refX + x, refY + y);
         mc.getItemRenderer().renderItemOverlayIntoGUI(fontRenderer, itemStack, refX + x, refY + y, itemStack.getCount() + "");
 
-        GlStateManager.disableDepthTest();
-        GlStateManager.popMatrix();
+        RenderSystem.disableDepthTest();
+        RenderSystem.popMatrix();
         RenderHelper.disableStandardItemLighting();
     }
 

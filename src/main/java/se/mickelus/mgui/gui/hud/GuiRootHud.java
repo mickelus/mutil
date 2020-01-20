@@ -1,12 +1,12 @@
 package se.mickelus.mgui.gui.hud;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
 import se.mickelus.mgui.gui.GuiElement;
@@ -19,9 +19,10 @@ public class GuiRootHud extends GuiElement {
     }
 
     public void draw(PlayerEntity player, BlockRayTraceResult rayTrace, VoxelShape shape, float partialTicks) {
-        double offsetX = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
-        double offsetY = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks + player.getEyeHeight();
-        double offsetZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
+        BlockPos playerPos = player.getPosition();
+        double offsetX = player.lastTickPosX + (playerPos.getX() - player.lastTickPosX) * partialTicks;
+        double offsetY = player.lastTickPosY + (playerPos.getY() - player.lastTickPosY) * partialTicks + player.getEyeHeight();
+        double offsetZ = player.lastTickPosZ + (playerPos.getZ() - player.lastTickPosZ) * partialTicks;
 
         BlockPos blockPos = rayTrace.getPos();
 
@@ -36,20 +37,20 @@ public class GuiRootHud extends GuiElement {
         activeAnimations.removeIf(keyframeAnimation -> !keyframeAnimation.isActive());
         activeAnimations.forEach(KeyframeAnimation::preDraw);
 
-        GlStateManager.enableBlend();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
                 GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.depthMask(false);
+        RenderSystem.depthMask(false);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translated(x, y, z);
+        RenderSystem.pushMatrix();
+        RenderSystem.translated(x, y, z);
 
         int mouseX = 0;
         int mouseY = 0;
 
         // magic number is the same used to offset the outline, stops textures from flickering
         Vec3d magicOffset = new Vec3d(facing.getDirectionVec()).scale(0.0020000000949949026D);
-        GlStateManager.translated(magicOffset.getX(), magicOffset.getY(), magicOffset.getZ());
+        RenderSystem.translated(magicOffset.getX(), magicOffset.getY(), magicOffset.getZ());
 
         switch (facing) {
             case NORTH:
@@ -59,8 +60,8 @@ public class GuiRootHud extends GuiElement {
                 width = (int) ((boundingBox.maxX - boundingBox.minX) * 32);
                 height = (int) ((boundingBox.maxY - boundingBox.minY) * 32);
 
-                GlStateManager.translated(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ);
-                GlStateManager.rotatef(180, 0, 1, 0);
+                RenderSystem.translated(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ);
+                RenderSystem.rotatef(180, 0, 1, 0);
                 break;
             case SOUTH:
                 mouseX = (int) ( ( hitX - boundingBox.minX ) * 32 );
@@ -69,7 +70,7 @@ public class GuiRootHud extends GuiElement {
                 width = (int) ((boundingBox.maxX - boundingBox.minX) * 32);
                 height = (int) ((boundingBox.maxY - boundingBox.minY) * 32);
 
-                GlStateManager.translated(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ);
+                RenderSystem.translated(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ);
                 break;
             case EAST:
                 mouseX = (int) ( ( boundingBox.maxZ - hitZ ) * 32 );
@@ -78,8 +79,8 @@ public class GuiRootHud extends GuiElement {
                 width = (int) ((boundingBox.maxZ - boundingBox.minZ) * 32);
                 height = (int) ((boundingBox.maxY - boundingBox.minY) * 32);
 
-                GlStateManager.translated(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
-                GlStateManager.rotatef(90, 0, 1, 0);
+                RenderSystem.translated(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
+                RenderSystem.rotatef(90, 0, 1, 0);
                 break;
             case WEST:
                 mouseX = (int) ( ( hitZ - boundingBox.minZ ) * 32 );
@@ -88,8 +89,8 @@ public class GuiRootHud extends GuiElement {
                 width = (int) ((boundingBox.maxZ - boundingBox.minZ) * 32);
                 height = (int) ((boundingBox.maxY - boundingBox.minY) * 32);
 
-                GlStateManager.translated(boundingBox.minX, boundingBox.maxY, boundingBox.minZ);
-                GlStateManager.rotatef(-90, 0, 1, 0);
+                RenderSystem.translated(boundingBox.minX, boundingBox.maxY, boundingBox.minZ);
+                RenderSystem.rotatef(-90, 0, 1, 0);
                 break;
             case UP:
                 mouseX = (int) ( ( boundingBox.maxX - hitX ) * 32 );
@@ -98,9 +99,9 @@ public class GuiRootHud extends GuiElement {
                 width = (int) ((boundingBox.maxX - boundingBox.minX) * 32);
                 height = (int) ((boundingBox.maxZ - boundingBox.minZ) * 32);
 
-                GlStateManager.translated(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
-                GlStateManager.rotatef(90, 1, 0, 0);
-                GlStateManager.scalef(-1, 1, 1);
+                RenderSystem.translated(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
+                RenderSystem.rotatef(90, 1, 0, 0);
+                RenderSystem.scalef(-1, 1, 1);
                 break;
             case DOWN:
                 mouseX = (int) ( ( hitX - boundingBox.minX ) * 32 );
@@ -109,19 +110,19 @@ public class GuiRootHud extends GuiElement {
                 width = (int) ((boundingBox.maxX - boundingBox.minX) * 32);
                 height = (int) ((boundingBox.maxZ - boundingBox.minZ) * 32);
 
-                GlStateManager.translated(boundingBox.minX, boundingBox.minY, boundingBox.maxZ);
-                GlStateManager.rotatef(90, 1, 0, 0);
+                RenderSystem.translated(boundingBox.minX, boundingBox.minY, boundingBox.maxZ);
+                RenderSystem.rotatef(90, 1, 0, 0);
                 break;
         }
 
 
         // 0.03125 = 1/32
-        GlStateManager.scaled(0.03125, -0.03125, 0.03125);
+        RenderSystem.scaled(0.03125, -0.03125, 0.03125);
         drawChildren(0, 0, 32, 32, mouseX, mouseY, 1);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
 
-        GlStateManager.depthMask(true);
-        GlStateManager.enableTexture();
-        GlStateManager.disableBlend();
+        RenderSystem.depthMask(true);
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
     }
 }

@@ -1,5 +1,6 @@
 package se.mickelus.mgui.gui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -77,7 +78,7 @@ public class GuiString extends GuiElement {
     public void draw(int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         activeAnimations.removeIf(keyframeAnimation -> !keyframeAnimation.isActive());
         activeAnimations.forEach(KeyframeAnimation::preDraw);
-        GlStateManager.enableBlend();
+        RenderSystem.enableBlend();
         drawString(string, refX + x, refY + y, color, opacity * getOpacity(), drawShadow);
     }
 

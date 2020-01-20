@@ -1,5 +1,6 @@
 package se.mickelus.mgui.gui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.BufferBuilder;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -313,18 +314,18 @@ public class GuiElement extends AbstractGui {
         float blue = (float)(color & 255) / 255.0F;
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
-        GlStateManager.enableBlend();
-        GlStateManager.disableTexture();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.color4f(red, green, blue, opacity);
+        RenderSystem.enableBlend();
+        RenderSystem.disableTexture();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        RenderSystem.color4f(red, green, blue, opacity);
         bufferBuilder.begin(7, DefaultVertexFormats.POSITION);
-        bufferBuilder.pos((double)left, (double)bottom, 0).endVertex();
-        bufferBuilder.pos((double)right, (double)bottom, 0).endVertex();
-        bufferBuilder.pos((double)right, (double)top, 0).endVertex();
-        bufferBuilder.pos((double)left, (double)top, 0).endVertex();
+        bufferBuilder.func_225582_a_((double)left, (double)bottom, 0).endVertex();
+        bufferBuilder.func_225582_a_((double)right, (double)bottom, 0).endVertex();
+        bufferBuilder.func_225582_a_((double)right, (double)top, 0).endVertex();
+        bufferBuilder.func_225582_a_((double)left, (double)top, 0).endVertex();
         tessellator.draw();
-        GlStateManager.enableTexture();
-        GlStateManager.disableBlend();
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
     }
 
     protected static int colorWithOpacity(int color, float opacity) {

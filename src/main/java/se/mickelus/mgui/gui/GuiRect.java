@@ -1,6 +1,7 @@
 package se.mickelus.mgui.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 public class GuiRect extends GuiElement {
 
@@ -27,12 +28,12 @@ public class GuiRect extends GuiElement {
     public void draw(int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         super.draw(refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
         if (offset) {
-            GlStateManager.translatef(0.5F, 0.5F, 0);
+            RenderSystem.translatef(0.5F, 0.5F, 0);
             drawRect(refX + x, refY + y, refX + x + width - 1, refY + y + height - 1, color, opacity * getOpacity());
-            GlStateManager.translatef(-0.5F, -0.5F, 0);
+            RenderSystem.translatef(-0.5F, -0.5F, 0);
         } else {
             drawRect(refX + x, refY + y, refX + x + width, refY + y + height, color, opacity * getOpacity());
         }
-        GlStateManager.color4f(1f, 1f, 1f, 1f);
+        RenderSystem.color4f(1f, 1f, 1f, 1f);
     }
 }
