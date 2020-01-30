@@ -1,7 +1,7 @@
 package se.mickelus.mgui.gui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import se.mickelus.mgui.MGuiMod;
 
@@ -42,18 +42,18 @@ public class GuiTextureOffset extends GuiElement {
     public void draw(int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         super.draw(refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
 
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
         Minecraft.getInstance().getTextureManager().bindTexture(textureLocation);
 
-        GlStateManager.color4f(
+        RenderSystem.color4f(
             (color >> 16 & 255) / 255f,
             (color >> 8 & 255) / 255f,
             (color & 255) / 255f,
             opacity * getOpacity() * 255f);
-        GlStateManager.enableBlend();
-        GlStateManager.translatef(0.5F, 0.5F, 0);
+        RenderSystem.enableBlend();
+        RenderSystem.translatef(0.5F, 0.5F, 0);
         blit(refX + x, refY + y, textureX, textureY, width - 1, height - 1);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     public int getColor() {

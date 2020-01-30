@@ -1,12 +1,11 @@
 package se.mickelus.mgui.gui;
 
-import javax.annotation.Nullable;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+
+import javax.annotation.Nullable;
 
 public class ToggleableSlot extends SlotItemHandler {
 
@@ -23,13 +22,14 @@ public class ToggleableSlot extends SlotItemHandler {
     public void toggle(boolean enabled) {
         isEnabled = enabled;
 
-        if (enabled) {
-            xPos = realX;
-            yPos = realY;
-        } else {
-            xPos = -10000;
-            yPos = -10000;
-        }
+//        @TODO: Find a way to hide a slot, since xPos and yPos are final in class Slot.
+//        if (enabled) {
+//            xPos = realX;
+//            yPos = realY;
+//        } else {
+//            xPos = -10000;
+//            yPos = -10000;
+//        }
     }
 
     public boolean isEnabled() {
