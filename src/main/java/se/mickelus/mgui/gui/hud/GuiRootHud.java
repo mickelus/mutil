@@ -2,7 +2,6 @@ package se.mickelus.mgui.gui.hud;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -18,17 +17,12 @@ public class GuiRootHud extends GuiElement {
         super(0, 0, 0, 0);
     }
 
-    public void draw(PlayerEntity player, BlockRayTraceResult rayTrace, VoxelShape shape, float partialTicks) {
-        BlockPos playerPos = player.getPosition();
-        double offsetX = player.lastTickPosX + (playerPos.getX() - player.lastTickPosX) * partialTicks;
-        double offsetY = player.lastTickPosY + (playerPos.getY() - player.lastTickPosY) * partialTicks + player.getEyeHeight();
-        double offsetZ = player.lastTickPosZ + (playerPos.getZ() - player.lastTickPosZ) * partialTicks;
-
+    public void draw(Vec3d proj, BlockRayTraceResult rayTrace, VoxelShape shape) {
         BlockPos blockPos = rayTrace.getPos();
 
         Vec3d hitVec = rayTrace.getHitVec();
 
-        draw(blockPos.getX() - offsetX, blockPos.getY() - offsetY, blockPos.getZ() - offsetZ,
+        draw(blockPos.getX() - proj.x, blockPos.getY() - proj.y, blockPos.getZ() - proj.z,
                 hitVec.x - blockPos.getX(), hitVec.y - blockPos.getY(), hitVec.z - blockPos.getZ(),
                 rayTrace.getFace(), shape.getBoundingBox());
     }
