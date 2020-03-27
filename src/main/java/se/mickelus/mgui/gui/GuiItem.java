@@ -19,6 +19,7 @@ public class GuiItem extends GuiElement {
     private ItemStack itemStack;
 
     private boolean showTooltip = true;
+    private boolean showCount = true;
 
     public GuiItem(int x, int y) {
         super(x, y, 16, 16);
@@ -30,6 +31,11 @@ public class GuiItem extends GuiElement {
 
     public GuiItem setTooltip(boolean showTooltip) {
         this.showTooltip = showTooltip;
+        return this;
+    }
+
+    public GuiItem setCount(boolean showCount) {
+        this.showCount = showCount;
         return this;
     }
 
@@ -59,7 +65,8 @@ public class GuiItem extends GuiElement {
         RenderHelper.enableGUIStandardItemLighting();
 
         mc.getItemRenderer().renderItemAndEffectIntoGUI(itemStack, refX + x, refY + y);
-        mc.getItemRenderer().renderItemOverlayIntoGUI(fontRenderer, itemStack, refX + x, refY + y, itemStack.getCount() + "");
+        mc.getItemRenderer().renderItemOverlayIntoGUI(fontRenderer, itemStack, refX + x, refY + y,
+                showCount ? itemStack.getCount() + "" : "");
 
         GlStateManager.disableDepthTest();
         GlStateManager.popMatrix();
