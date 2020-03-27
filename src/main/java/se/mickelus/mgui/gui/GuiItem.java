@@ -57,7 +57,7 @@ public class GuiItem extends GuiElement {
         RenderSystem.enableDepthTest();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
                 GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        RenderHelper.func_227780_a_();
+        RenderHelper.enableStandardItemLighting();
 
         mc.getItemRenderer().renderItemAndEffectIntoGUI(itemStack, refX + x, refY + y);
         mc.getItemRenderer().renderItemOverlayIntoGUI(fontRenderer, itemStack, refX + x, refY + y, itemStack.getCount() + "");

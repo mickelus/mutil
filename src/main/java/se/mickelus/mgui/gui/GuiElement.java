@@ -319,10 +319,10 @@ public class GuiElement extends AbstractGui {
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         RenderSystem.color4f(red, green, blue, opacity);
         bufferBuilder.begin(7, DefaultVertexFormats.POSITION);
-        bufferBuilder.func_225582_a_((double)left, (double)bottom, 0).endVertex();
-        bufferBuilder.func_225582_a_((double)right, (double)bottom, 0).endVertex();
-        bufferBuilder.func_225582_a_((double)right, (double)top, 0).endVertex();
-        bufferBuilder.func_225582_a_((double)left, (double)top, 0).endVertex();
+        bufferBuilder.pos((double)left, (double)bottom, 0).endVertex();
+        bufferBuilder.pos((double)right, (double)bottom, 0).endVertex();
+        bufferBuilder.pos((double)right, (double)top, 0).endVertex();
+        bufferBuilder.pos((double)left, (double)top, 0).endVertex();
         tessellator.draw();
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();

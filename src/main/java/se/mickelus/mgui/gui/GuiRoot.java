@@ -13,7 +13,7 @@ public class GuiRoot extends GuiElement {
     }
 
     public void draw() {
-        MainWindow window = mc.func_228018_at_();
+        MainWindow window = mc.getMainWindow();
 
         int width = window.getScaledWidth();
         int height = window.getScaledHeight();

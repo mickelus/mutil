@@ -13,11 +13,11 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '2.0.0'
+version = "${mgui_version}"
 group = 'se.mickelus.mgui' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "mgui-${minecraft_version}"
+archivesBaseName = "mgui-${mc_version}"
 
-String forgeVersion = "${minecraft_version}-${forge_major}.${forge_minor}"
+String forgeVersion = "${mc_version}-${forge_major}.${forge_minor}"
 String forgeName = "$forge_base:$forgeVersion"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
@@ -46,7 +46,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                mgui {
                     source sourceSets.main
                 }
             }
@@ -62,7 +62,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                mgui {
                     source sourceSets.main
                 }
             }
@@ -77,10 +77,10 @@ minecraft {
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'mgui', '--all', '--output', file('src/generated/resources/')
 
             mods {
-                examplemod {
+                mgui {
                     source sourceSets.main
                 }
             }
