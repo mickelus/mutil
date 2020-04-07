@@ -13,12 +13,9 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = "${mgui_version}"
+version = "${mc_version}-${mgui_version}"
 group = 'se.mickelus.mgui' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "mgui-${mc_version}"
-
-String forgeVersion = "${mc_version}-${forge_major}.${forge_minor}"
-String forgeName = "$forge_base:$forgeVersion"
+archivesBaseName = "mgui"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
@@ -92,7 +89,7 @@ dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft forgeName
+    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
@@ -141,12 +138,18 @@ def reobfArtifact = artifacts.add('default', reobfFile) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            artifactId = archivesBaseName
             artifact reobfArtifact
         }
     }
     repositories {
         maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/mickelus/mgui")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GH_USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("GH_TOKEN")
+            }
         }
     }
 }
