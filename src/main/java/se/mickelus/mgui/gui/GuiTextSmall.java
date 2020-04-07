@@ -18,7 +18,7 @@ public class GuiTextSmall extends GuiText {
     public void draw(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         matrixStack.push();
         matrixStack.scale(.5f, .5f, .5f);
-        fontRenderer.drawSplitString(string, (refX + x) * 2, (refY + y) * 2, width*2, 0xffffffff);
+        renderText(fontRenderer, matrixStack, string, (refX + x) * 2, (refY + y) * 2, width * 2, 0xffffff, opacity);
         matrixStack.pop();
     }
 }

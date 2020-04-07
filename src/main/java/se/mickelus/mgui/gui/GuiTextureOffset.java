@@ -26,7 +26,8 @@ public class GuiTextureOffset extends GuiTexture {
 
         matrixStack.push();
         matrixStack.translate(0.5F, 0.5F, 0);
-        blit(refX + x, refY + y, textureX, textureY, width - 1, height - 1);
+        drawTexture(matrixStack, textureLocation, refX + x, refY + y, width - 1, height - 1, textureX, textureY,
+                color, getOpacity() * opacity);
         matrixStack.pop();
     }
 }
