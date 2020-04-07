@@ -1,5 +1,6 @@
 package se.mickelus.mgui.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 
@@ -23,7 +24,7 @@ public class GuiText extends GuiElement {
     }
 
     @Override
-    public void draw(int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+    public void draw(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         fontRenderer.drawSplitString(string, refX + x, refY + y, width, 0xffffffff);
     }
 }

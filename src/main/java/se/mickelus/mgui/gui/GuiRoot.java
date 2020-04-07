@@ -1,7 +1,9 @@
 package se.mickelus.mgui.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.TransformationMatrix;
 
 public class GuiRoot extends GuiElement {
 
@@ -13,13 +15,15 @@ public class GuiRoot extends GuiElement {
     }
 
     public void draw() {
-        MainWindow window = mc.getMainWindow();
+        if (isVisible()) {
+            MainWindow window = mc.getMainWindow();
 
-        int width = window.getScaledWidth();
-        int height = window.getScaledHeight();
-        double mouseX = mc.mouseHelper.getMouseX() * width / window.getWidth();
-        double mouseY = height - mc.mouseHelper.getMouseY() * height / window.getHeight() - 1;
-        drawChildren(0,0, width, height, (int) mouseX, (int) mouseY, 1);
+            width = window.getScaledWidth();
+            height = window.getScaledHeight();
+            double mouseX = mc.mouseHelper.getMouseX() * width / window.getWidth();
+            double mouseY = mc.mouseHelper.getMouseY() * height / window.getHeight();
+
+            drawChildren(new MatrixStack(), 0, 0, width, height, (int) mouseX, (int) mouseY, 1);
+        }
     }
-
 }

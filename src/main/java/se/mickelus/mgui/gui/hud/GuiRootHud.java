@@ -1,7 +1,9 @@
 package se.mickelus.mgui.gui.hud;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -17,106 +19,98 @@ public class GuiRootHud extends GuiElement {
         super(0, 0, 0, 0);
     }
 
-    public void draw(Vec3d proj, BlockRayTraceResult rayTrace, VoxelShape shape) {
+    public void draw(MatrixStack matrixStack, Vec3d proj, BlockRayTraceResult rayTrace, VoxelShape shape) {
         BlockPos blockPos = rayTrace.getPos();
 
         Vec3d hitVec = rayTrace.getHitVec();
 
-        draw(blockPos.getX() - proj.x, blockPos.getY() - proj.y, blockPos.getZ() - proj.z,
+        draw(matrixStack, blockPos.getX() - proj.x, blockPos.getY() - proj.y, blockPos.getZ() - proj.z,
                 hitVec.x - blockPos.getX(), hitVec.y - blockPos.getY(), hitVec.z - blockPos.getZ(),
                 rayTrace.getFace(), shape.getBoundingBox());
     }
 
-    public void draw(double x, double y, double z, double hitX, double hitY, double hitZ, Direction facing, AxisAlignedBB boundingBox) {
+    public void draw(MatrixStack matrixStack, double x, double y, double z, double hitX, double hitY, double hitZ, Direction facing, AxisAlignedBB boundingBox) {
         activeAnimations.removeIf(keyframeAnimation -> !keyframeAnimation.isActive());
         activeAnimations.forEach(KeyframeAnimation::preDraw);
 
-        RenderSystem.enableBlend();
-        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        RenderSystem.depthMask(false);
-
-        RenderSystem.pushMatrix();
-        RenderSystem.translated(x, y, z);
+        matrixStack.push();
+        matrixStack.translate(x, y, z);
 
         int mouseX = 0;
         int mouseY = 0;
 
+        float size = 64;
+
         // magic number is the same used to offset the outline, stops textures from flickering
         Vec3d magicOffset = new Vec3d(facing.getDirectionVec()).scale(0.0020000000949949026D);
-        RenderSystem.translated(magicOffset.getX(), magicOffset.getY(), magicOffset.getZ());
+        matrixStack.translate(magicOffset.getX(), magicOffset.getY(), magicOffset.getZ());
 
         switch (facing) {
             case NORTH:
-                mouseX = (int) ( ( boundingBox.maxX - hitX ) * 32 );
-                mouseY = (int) ( ( boundingBox.maxY - hitY ) * 32 );
+                mouseX = (int) ( ( boundingBox.maxX - hitX ) * size );
+                mouseY = (int) ( ( boundingBox.maxY - hitY ) * size );
 
-                width = (int) ((boundingBox.maxX - boundingBox.minX) * 32);
-                height = (int) ((boundingBox.maxY - boundingBox.minY) * 32);
+                width = (int) ((boundingBox.maxX - boundingBox.minX) * size);
+                height = (int) ((boundingBox.maxY - boundingBox.minY) * size);
 
-                RenderSystem.translated(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ);
-                RenderSystem.rotatef(180, 0, 1, 0);
+                matrixStack.translate(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ);
+                matrixStack.rotate(Vector3f.YP.rotationDegrees(180));
                 break;
             case SOUTH:
-                mouseX = (int) ( ( hitX - boundingBox.minX ) * 32 );
-                mouseY = (int) ( ( boundingBox.maxY - hitY ) * 32 );
+                mouseX = (int) ( ( hitX - boundingBox.minX ) * size );
+                mouseY = (int) ( ( boundingBox.maxY - hitY ) * size );
 
-                width = (int) ((boundingBox.maxX - boundingBox.minX) * 32);
-                height = (int) ((boundingBox.maxY - boundingBox.minY) * 32);
+                width = (int) ((boundingBox.maxX - boundingBox.minX) * size);
+                height = (int) ((boundingBox.maxY - boundingBox.minY) * size);
 
-                RenderSystem.translated(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ);
+                matrixStack.translate(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ);
                 break;
             case EAST:
-                mouseX = (int) ( ( boundingBox.maxZ - hitZ ) * 32 );
-                mouseY = (int) ( ( boundingBox.maxY - hitY ) * 32 );
+                mouseX = (int) ( ( boundingBox.maxZ - hitZ ) * size );
+                mouseY = (int) ( ( boundingBox.maxY - hitY ) * size );
 
-                width = (int) ((boundingBox.maxZ - boundingBox.minZ) * 32);
-                height = (int) ((boundingBox.maxY - boundingBox.minY) * 32);
+                width = (int) ((boundingBox.maxZ - boundingBox.minZ) * size);
+                height = (int) ((boundingBox.maxY - boundingBox.minY) * size);
 
-                RenderSystem.translated(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
-                RenderSystem.rotatef(90, 0, 1, 0);
+                matrixStack.translate(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
+                matrixStack.rotate(Vector3f.YP.rotationDegrees(90));
                 break;
             case WEST:
-                mouseX = (int) ( ( hitZ - boundingBox.minZ ) * 32 );
-                mouseY = (int) ( ( boundingBox.maxY - hitY ) * 32 );
+                mouseX = (int) ( ( hitZ - boundingBox.minZ ) * size );
+                mouseY = (int) ( ( boundingBox.maxY - hitY ) * size );
 
-                width = (int) ((boundingBox.maxZ - boundingBox.minZ) * 32);
-                height = (int) ((boundingBox.maxY - boundingBox.minY) * 32);
+                width = (int) ((boundingBox.maxZ - boundingBox.minZ) * size);
+                height = (int) ((boundingBox.maxY - boundingBox.minY) * size);
 
-                RenderSystem.translated(boundingBox.minX, boundingBox.maxY, boundingBox.minZ);
-                RenderSystem.rotatef(-90, 0, 1, 0);
+                matrixStack.translate(boundingBox.minX, boundingBox.maxY, boundingBox.minZ);
+                matrixStack.rotate(Vector3f.YP.rotationDegrees(-90));
                 break;
             case UP:
-                mouseX = (int) ( ( boundingBox.maxX - hitX ) * 32 );
-                mouseY = (int) ( ( boundingBox.maxZ - hitZ ) * 32 );
+                mouseX = (int) ( ( boundingBox.maxX - hitX ) * size );
+                mouseY = (int) ( ( boundingBox.maxZ - hitZ ) * size );
 
-                width = (int) ((boundingBox.maxX - boundingBox.minX) * 32);
-                height = (int) ((boundingBox.maxZ - boundingBox.minZ) * 32);
+                width = (int) ((boundingBox.maxX - boundingBox.minX) * size);
+                height = (int) ((boundingBox.maxZ - boundingBox.minZ) * size);
 
-                RenderSystem.translated(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
-                RenderSystem.rotatef(90, 1, 0, 0);
-                RenderSystem.scalef(-1, 1, 1);
+                matrixStack.translate(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
+                matrixStack.rotate(Vector3f.XP.rotationDegrees(90));
+                matrixStack.scale(-1, 1, 1);
                 break;
             case DOWN:
-                mouseX = (int) ( ( hitX - boundingBox.minX ) * 32 );
-                mouseY = (int) ( ( boundingBox.maxZ - hitZ ) * 32 );
+                mouseX = (int) ( ( hitX - boundingBox.minX ) * size );
+                mouseY = (int) ( ( boundingBox.maxZ - hitZ ) * size );
 
-                width = (int) ((boundingBox.maxX - boundingBox.minX) * 32);
-                height = (int) ((boundingBox.maxZ - boundingBox.minZ) * 32);
+                width = (int) ((boundingBox.maxX - boundingBox.minX) * size);
+                height = (int) ((boundingBox.maxZ - boundingBox.minZ) * size);
 
-                RenderSystem.translated(boundingBox.minX, boundingBox.minY, boundingBox.maxZ);
-                RenderSystem.rotatef(90, 1, 0, 0);
+                matrixStack.translate(boundingBox.minX, boundingBox.minY, boundingBox.maxZ);
+                matrixStack.rotate(Vector3f.XP.rotationDegrees(90));
                 break;
         }
 
-
-        // 0.03125 = 1/32
-        RenderSystem.scaled(0.03125, -0.03125, 0.03125);
-        drawChildren(0, 0, 32, 32, mouseX, mouseY, 1);
-        RenderSystem.popMatrix();
-
-        RenderSystem.depthMask(true);
-        RenderSystem.enableTexture();
-        RenderSystem.disableBlend();
+        matrixStack.scale(1 / size, -1 / size, 1 / size);
+        matrixStack.translate(0.0D, 0, 0.02);
+        drawChildren(matrixStack, 0, 0, width, height, mouseX, mouseY, 1);
+        matrixStack.pop();
     }
 }

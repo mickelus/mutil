@@ -1,26 +1,23 @@
 package se.mickelus.mgui.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 import se.mickelus.mgui.MGuiMod;
 
 public class GuiTexture extends GuiElement {
 
-    private ResourceLocation textureLocation;
+    protected ResourceLocation textureLocation;
 
-    private int textureX;
-    private int textureY;
+    protected int textureX;
+    protected int textureY;
 
     protected int color = 0xffffff;
-
-    public GuiTexture(int x, int y, int width, int height, String texture) {
-        this(x, y, width, height, new ResourceLocation(MGuiMod.MOD_ID, texture));
-    }
-
-    public GuiTexture(int x, int y, int width, int height, int textureX, int textureY, String texture) {
-        this(x, y, width, height, textureX, textureY, new ResourceLocation(MGuiMod.MOD_ID, texture));
-    }
 
     public GuiTexture(int x, int y, int width, int height, ResourceLocation textureLocation) {
         this(x, y, width, height, 0, 0, textureLocation);
@@ -47,19 +44,10 @@ public class GuiTexture extends GuiElement {
     }
 
     @Override
-    public void draw(int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
-        super.draw(refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
+    public void draw(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+        super.draw(matrixStack, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
 
-        RenderSystem.pushMatrix();
-        Minecraft.getInstance().getTextureManager().bindTexture(textureLocation);
-
-        RenderSystem.color4f(
-            (color >> 16 & 255) / 255f,
-            (color >> 8 & 255) / 255f,
-            (color & 255) / 255f,
-            opacity * getOpacity());
-        RenderSystem.enableBlend();
-        blit(refX + x, refY + y, textureX, textureY, width, height);
-        RenderSystem.popMatrix();
+        drawTexture(matrixStack, textureLocation, refX + x, refY + y, width, height, textureX, textureY,
+                color, getOpacity() * opacity);
     }
 }

@@ -1,7 +1,6 @@
 package se.mickelus.mgui.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class GuiRect extends GuiElement {
 
@@ -25,15 +24,15 @@ public class GuiRect extends GuiElement {
     }
 
     @Override
-    public void draw(int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
-        super.draw(refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
+    public void draw(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+        super.draw(matrixStack, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
         if (offset) {
-            RenderSystem.translatef(0.5F, 0.5F, 0);
-            drawRect(refX + x, refY + y, refX + x + width - 1, refY + y + height - 1, color, opacity * getOpacity());
-            RenderSystem.translatef(-0.5F, -0.5F, 0);
+            matrixStack.push();
+            matrixStack.translate(0.5F, 0.5F, 0);
+            drawRect(matrixStack, refX + x, refY + y, refX + x + width - 1, refY + y + height - 1, color, opacity * getOpacity());
+            matrixStack.pop();
         } else {
-            drawRect(refX + x, refY + y, refX + x + width, refY + y + height, color, opacity * getOpacity());
+            drawRect(matrixStack, refX + x, refY + y, refX + x + width, refY + y + height, color, opacity * getOpacity());
         }
-        RenderSystem.color4f(1f, 1f, 1f, 1f);
     }
 }

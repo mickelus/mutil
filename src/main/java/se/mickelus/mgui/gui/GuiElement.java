@@ -1,11 +1,14 @@
 package se.mickelus.mgui.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.BufferBuilder;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 import se.mickelus.mgui.gui.animation.KeyframeAnimation;
 
 import java.util.*;
@@ -45,9 +48,9 @@ public class GuiElement extends AbstractGui {
         activeAnimations = new HashSet<>();
     }
 
-    public void draw(int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+    public void draw(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         calculateFocusState(refX, refY, mouseX, mouseY);
-        drawChildren(refX + x, refY + y, screenWidth, screenHeight, mouseX, mouseY, opacity * this.opacity);
+        drawChildren(matrixStack, refX + x, refY + y, screenWidth, screenHeight, mouseX, mouseY, opacity * this.opacity);
     }
 
     public void updateAnimations() {
@@ -55,14 +58,14 @@ public class GuiElement extends AbstractGui {
         activeAnimations.forEach(KeyframeAnimation::preDraw);
     }
 
-    protected void drawChildren(int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+    protected void drawChildren(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         elements.removeIf(GuiElement::shouldRemove);
         elements.stream()
                 .filter(GuiElement::isVisible)
                 .forEach((element -> {
                     element.updateAnimations();
                     element.draw(
-                            refX + getXOffset(this, element.attachmentAnchor) - getXOffset(element, element.attachmentPoint),
+                            matrixStack, refX + getXOffset(this, element.attachmentAnchor) - getXOffset(element, element.attachmentPoint),
                             refY + getYOffset(this, element.attachmentAnchor) - getYOffset(element, element.attachmentPoint),
                             screenWidth, screenHeight, mouseX, mouseY, opacity);
                 }));
@@ -296,36 +299,36 @@ public class GuiElement extends AbstractGui {
     }
 
 
-    protected void drawRect(int left, int top, int right, int bottom, int color, float opacity) {
-        if (left < right) {
-            int i = left;
-            left = right;
-            right = i;
-        }
+    protected static void drawRect(MatrixStack matrixStack, int left, int top, int right, int bottom, int color, float opacity) {
+        fill(matrixStack.getLast().getMatrix(), left, top, right, bottom, colorWithOpacity(color, opacity));
+    }
 
-        if (top < bottom) {
-            int j = top;
-            top = bottom;
-            bottom = j;
-        }
+    protected static void drawTexture(MatrixStack matrixStack, ResourceLocation textureLocation, int x, int y, int width, int height,
+            int u, int v, int color, float opacity) {
+        RenderSystem.pushMatrix();
+        Minecraft.getInstance().getTextureManager().bindTexture(textureLocation);
 
-        float red = (float)(color >> 16 & 255) / 255.0F;
-        float green = (float)(color >> 8 & 255) / 255.0F;
-        float blue = (float)(color & 255) / 255.0F;
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferBuilder = tessellator.getBuffer();
+        // todo: change vertex format to POSITION_COLOR_TEX, push color on buffer and skip using RenderSystem?
+        // There's functionality for this in NativeImage, but deobf mapping is incorrect for rgb functions which makes for very confuss
+        RenderSystem.color4f(
+                (color >> 16 & 255) / 255f,
+                (color >> 8 & 255) / 255f,
+                (color & 255) / 255f,
+                opacity);
+
         RenderSystem.enableBlend();
-        RenderSystem.disableTexture();
-        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        RenderSystem.color4f(red, green, blue, opacity);
-        bufferBuilder.begin(7, DefaultVertexFormats.POSITION);
-        bufferBuilder.pos((double)left, (double)bottom, 0).endVertex();
-        bufferBuilder.pos((double)right, (double)bottom, 0).endVertex();
-        bufferBuilder.pos((double)right, (double)top, 0).endVertex();
-        bufferBuilder.pos((double)left, (double)top, 0).endVertex();
+        RenderSystem.enableAlphaTest();
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        buffer.pos(matrixStack.getLast().getMatrix(), x, y + height, 0).tex(u / 256f, (v + height) / 256f).endVertex();
+        buffer.pos(matrixStack.getLast().getMatrix(), x + width, y + height, 0).tex((u + width) / 256f, (v + height) / 256f).endVertex();
+        buffer.pos(matrixStack.getLast().getMatrix(), x + width, y, 0).tex((u + width) / 256f, v / 256f).endVertex();
+        buffer.pos(matrixStack.getLast().getMatrix(), x, y, 0).tex(u / 256f, v / 256f).endVertex();
         tessellator.draw();
-        RenderSystem.enableTexture();
-        RenderSystem.disableBlend();
+
+        RenderSystem.popMatrix();
     }
 
     protected static int colorWithOpacity(int color, float opacity) {

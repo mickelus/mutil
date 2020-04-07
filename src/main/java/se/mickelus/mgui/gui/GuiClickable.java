@@ -1,5 +1,7 @@
 package se.mickelus.mgui.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 public class GuiClickable extends GuiElement {
 
     protected final Runnable onClickHandler;
@@ -11,8 +13,8 @@ public class GuiClickable extends GuiElement {
     }
 
     @Override
-    public void draw(int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
-        super.draw(refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
+    public void draw(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+        super.draw(matrixStack, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
     }
 
     @Override
