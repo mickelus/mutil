@@ -280,7 +280,13 @@ public class GuiElement extends AbstractGui {
         return Collections.unmodifiableList(elements);
     }
 
-    public <T> List<T> getChildrenOfType(Class<T> type) {
+    /**
+     * Return child elements which has the given type
+     * @param type
+     * @param <T>
+     * @return
+     */
+    public <T> List<T> getChildren(Class<T> type) {
         return elements.stream()
                 .filter(type::isInstance)
                 .map(type::cast)
