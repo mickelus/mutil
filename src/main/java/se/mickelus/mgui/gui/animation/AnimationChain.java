@@ -2,7 +2,7 @@ package se.mickelus.mgui.gui.animation;
 
 import java.util.function.Consumer;
 
-public class AnimationChain {
+public class AnimationChain implements GuiAnimation {
 
     private final KeyframeAnimation[] animations;
     private KeyframeAnimation activeAnimation;

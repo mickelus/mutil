@@ -5,7 +5,7 @@ import se.mickelus.mgui.gui.GuiElement;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-public class KeyframeAnimation {
+public class KeyframeAnimation implements GuiAnimation {
 
     private final int duration;
     private int delay = 0;
