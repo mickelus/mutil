@@ -35,7 +35,7 @@ public class GuiString extends GuiElement {
 
         fontRenderer = Minecraft.getInstance().fontRenderer;
 
-        this.string = fontRenderer.trimStringToWidth(string, width);
+        this.string = fontRenderer.func_238412_a_(string, width);
     }
 
     public GuiString(int x, int y, String string, GuiAttachment attachment) {
@@ -63,7 +63,7 @@ public class GuiString extends GuiElement {
     public void setString(String string) {
         if (string != null && !string.equals(this.string)) {
             if (fixedWidth) {
-                this.string = fontRenderer.trimStringToWidth(string, width);
+                this.string = fontRenderer.func_238412_a_(string, width);
             } else {
                 this.string = string;
                 width = fontRenderer.getStringWidth(string);

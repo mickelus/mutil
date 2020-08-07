@@ -1,12 +1,20 @@
 package se.mickelus.mgui.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.CrashReportCategory;
+import net.minecraft.crash.ReportedException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
@@ -21,7 +29,7 @@ public class GuiItem extends GuiElement {
     private ItemStack itemStack;
 
     private boolean showTooltip = true;
-    private boolean showCount = true;
+    private boolean enforceCount = false;
 
     public GuiItem(int x, int y) {
         super(x, y, 16, 16);
@@ -36,8 +44,13 @@ public class GuiItem extends GuiElement {
         return this;
     }
 
-    public GuiItem setCount(boolean showCount) {
-        this.showCount = showCount;
+    /**
+     * Enforces this to always render the item count, even if the count is 1
+     * @param enforceCount
+     * @return
+     */
+    public GuiItem enforceCount(boolean enforceCount) {
+        this.enforceCount = enforceCount;
         return this;
     }
 
@@ -55,7 +68,7 @@ public class GuiItem extends GuiElement {
 
         return this;
     }
-
+    // todo 1.16: opacity no longer works, did it ever work?
     @Override
     public void draw(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         super.draw(matrixStack, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
@@ -65,14 +78,13 @@ public class GuiItem extends GuiElement {
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
                 GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         RenderHelper.enableStandardItemLighting();
-
         mc.getItemRenderer().renderItemAndEffectIntoGUI(itemStack, refX + x, refY + y);
+        RenderHelper.disableStandardItemLighting();
         mc.getItemRenderer().renderItemOverlayIntoGUI(fontRenderer, itemStack, refX + x, refY + y,
-                showCount ? itemStack.getCount() + "" : "");
+                enforceCount ? itemStack.getCount() + "" : null);
 
         RenderSystem.disableDepthTest();
         RenderSystem.popMatrix();
-        RenderHelper.disableStandardItemLighting();
     }
 
     @Override
@@ -81,7 +93,7 @@ public class GuiItem extends GuiElement {
             return itemStack.getTooltip(Minecraft.getInstance().player,
                     this.mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL)
                     .stream()
-                    .map(ITextComponent::getFormattedText)
+                    .map(ITextComponent::getString)
                     .collect(Collectors.toList());
         }
 

@@ -3,7 +3,6 @@ package se.mickelus.mgui.gui;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.TransformationMatrix;
 
 public class GuiRoot extends GuiElement {
 

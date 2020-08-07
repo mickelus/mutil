@@ -1,15 +1,13 @@
 package se.mickelus.mgui.gui.hud;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import se.mickelus.mgui.gui.GuiElement;
 import se.mickelus.mgui.gui.animation.KeyframeAnimation;
 
@@ -19,10 +17,10 @@ public class GuiRootHud extends GuiElement {
         super(0, 0, 0, 0);
     }
 
-    public void draw(MatrixStack matrixStack, Vec3d proj, BlockRayTraceResult rayTrace, VoxelShape shape) {
+    public void draw(MatrixStack matrixStack, Vector3d proj, BlockRayTraceResult rayTrace, VoxelShape shape) {
         BlockPos blockPos = rayTrace.getPos();
 
-        Vec3d hitVec = rayTrace.getHitVec();
+        Vector3d hitVec = rayTrace.getHitVec();
 
         draw(matrixStack, blockPos.getX() - proj.x, blockPos.getY() - proj.y, blockPos.getZ() - proj.z,
                 hitVec.x - blockPos.getX(), hitVec.y - blockPos.getY(), hitVec.z - blockPos.getZ(),
@@ -42,7 +40,7 @@ public class GuiRootHud extends GuiElement {
         float size = 64;
 
         // magic number is the same used to offset the outline, stops textures from flickering
-        Vec3d magicOffset = new Vec3d(facing.getDirectionVec()).scale(0.0020000000949949026D);
+        Vector3d magicOffset = Vector3d.copy(facing.getDirectionVec()).scale(0.0020000000949949026D);
         matrixStack.translate(magicOffset.getX(), magicOffset.getY(), magicOffset.getZ());
 
         switch (facing) {

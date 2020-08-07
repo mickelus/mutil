@@ -1,10 +1,7 @@
 package se.mickelus.mgui.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
-import se.mickelus.mgui.MGuiMod;
 
 /**
  * Texture with half "pixel" offset

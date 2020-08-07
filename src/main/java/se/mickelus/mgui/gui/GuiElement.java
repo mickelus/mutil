@@ -293,6 +293,8 @@ public class GuiElement extends AbstractGui {
                 .collect(Collectors.toList());
     }
 
+    // todo 1.16: rewrite to use ITextComponent instead of String
+    @Deprecated
     public List<String> getTooltipLines() {
         if (isVisible()) {
             return elements.stream()
@@ -306,7 +308,7 @@ public class GuiElement extends AbstractGui {
 
 
     protected static void drawRect(MatrixStack matrixStack, int left, int top, int right, int bottom, int color, float opacity) {
-        fill(matrixStack.getLast().getMatrix(), left, top, right, bottom, colorWithOpacity(color, opacity));
+        fill(matrixStack, left, top, right, bottom, colorWithOpacity(color, opacity));
     }
 
     protected static void drawTexture(MatrixStack matrixStack, ResourceLocation textureLocation, int x, int y, int width, int height,

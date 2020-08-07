@@ -6,7 +6,7 @@
 # The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
 modLoader="javafml" #mandatory
 # A version range to match for said mod loader - for regular FML @Mod it will be the forge version
-loaderVersion="[31,)" #mandatory (28 is current forge version)
+loaderVersion="[32,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 # A URL to refer people to when problems occur with this mod
 issueTrackerURL="https://github.com/mickelus/mgui/issues" #optional
 # A list of mods - how many allowed here is determined by the individual mod loader
@@ -19,8 +19,6 @@ version="${file.jarVersion}" #mandatory
 displayName="mgui" #mandatory
 # A URL for the "homepage" for this mod, displayed in the mod UI
 displayURL="https://github.com/mickelus/mgui" #optional
-# A file name (in the root of the mod JAR) containing a logo for display
-# A text field displayed in the mod UI
 # A text field displayed in the mod UI
 authors="Mickelus" #optional
 # The description text for the mod (multi line!) (#mandatory)
@@ -34,7 +32,7 @@ View library for minecraft mods.
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-    versionRange="[31,)" #mandatory
+    versionRange="[32,)" #mandatory
     # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
@@ -43,6 +41,6 @@ View library for minecraft mods.
 [[dependencies.mgui]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.15.2]"
+    versionRange="[1.16.1]"
     ordering="NONE"
     side="BOTH"

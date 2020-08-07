@@ -4,8 +4,10 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.StringTextComponent;
 
 import java.util.List;
 
@@ -35,19 +37,19 @@ public class GuiText extends GuiElement {
 
     protected static void renderText(FontRenderer fontRenderer, MatrixStack matrixStack, String string, int x, int y, int width,
             int color, float opacity) {
-        List<String> list = fontRenderer.listFormattedStringToWidth(string, width);
+        List<ITextProperties> list = fontRenderer.func_238425_b_(new StringTextComponent(string), width);
         Matrix4f matrix = matrixStack.getLast().getMatrix();
 
-        for(String line : list) {
+        for(ITextProperties line : list) {
             float lineX = (float) x;
             IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 
             if (fontRenderer.getBidiFlag()) {
-                int i = fontRenderer.getStringWidth(fontRenderer.bidiReorder(line));
+                int i = fontRenderer.getStringWidth(fontRenderer.bidiReorder(line.getString()));
                 lineX += (float)(width - i);
             }
 
-            fontRenderer.renderString(line, lineX, (float)y, colorWithOpacity(color, opacity), false, matrix, buffer, false, 0, 15728880);
+            fontRenderer.func_238416_a_(line, lineX, (float)y, colorWithOpacity(color, opacity), false, matrix, buffer, false, 0, 15728880);
 
             buffer.finish();
 

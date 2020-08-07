@@ -14,7 +14,7 @@ public class GuiKeybinding extends GuiElement {
 
     public GuiKeybinding(int x, int y, KeyBinding keyBinding) {
         this(x, y,
-                keyBinding.getKeyDescription(),
+                keyBinding.getKey().func_237520_d_().getString(),
                 keyBinding.getKeyModifier() != KeyModifier.NONE ? keyBinding.getKeyModifier().toString() : null,
                 I18n.format(keyBinding.getKeyDescription()));
     }
@@ -48,9 +48,9 @@ public class GuiKeybinding extends GuiElement {
         public GuiKey(int x, int y, String key) {
             super(x, y, 0, 11);
 
-            // todo 1.14: handle single character as string?
+            // todo 1.16: does this break width for single character elements
             if (key.length() == 1) {
-                width = (int) Minecraft.getInstance().fontRenderer.getCharWidth(key.charAt(0)) + 5;
+                width = Minecraft.getInstance().fontRenderer.getStringWidth(key) + 5;
             } else {
                 width = Minecraft.getInstance().fontRenderer.getStringWidth(key);
             }
