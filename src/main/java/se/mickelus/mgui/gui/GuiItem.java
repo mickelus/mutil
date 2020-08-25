@@ -29,7 +29,7 @@ public class GuiItem extends GuiElement {
     private ItemStack itemStack;
 
     private boolean showTooltip = true;
-    private boolean enforceCount = false;
+    private CountMode countMode = CountMode.normal;
 
     public GuiItem(int x, int y) {
         super(x, y, 16, 16);
@@ -44,13 +44,8 @@ public class GuiItem extends GuiElement {
         return this;
     }
 
-    /**
-     * Enforces this to always render the item count, even if the count is 1
-     * @param enforceCount
-     * @return
-     */
-    public GuiItem enforceCount(boolean enforceCount) {
-        this.enforceCount = enforceCount;
+    public GuiItem setCountVisibility(CountMode mode) {
+        this.countMode = mode;
         return this;
     }
 
@@ -80,11 +75,23 @@ public class GuiItem extends GuiElement {
         RenderHelper.enableStandardItemLighting();
         mc.getItemRenderer().renderItemAndEffectIntoGUI(itemStack, refX + x, refY + y);
         RenderHelper.disableStandardItemLighting();
-        mc.getItemRenderer().renderItemOverlayIntoGUI(fontRenderer, itemStack, refX + x, refY + y,
-                enforceCount ? itemStack.getCount() + "" : null);
+        mc.getItemRenderer().renderItemOverlayIntoGUI(fontRenderer, itemStack, refX + x, refY + y, getCountString());
 
         RenderSystem.disableDepthTest();
         RenderSystem.popMatrix();
+    }
+
+    protected String getCountString() {
+        switch (countMode) {
+            case normal:
+                return null;
+            case always:
+                return String.valueOf(itemStack.getCount());
+            case never:
+                return "";
+        }
+
+        return null;
     }
 
     @Override
@@ -98,5 +105,13 @@ public class GuiItem extends GuiElement {
         }
 
         return null;
+    }
+
+    public enum CountMode {
+        /** shows if count is > 1 **/
+        normal,
+
+        always,
+        never
     }
 }
