@@ -10,6 +10,8 @@ public class AnimationChain implements GuiAnimation {
     private boolean looping = false;
     private Consumer<Boolean> stopHandler;
 
+    private boolean isActive;
+
     public AnimationChain(KeyframeAnimation ... animations) {
         this.animations = animations;
 
@@ -36,32 +38,37 @@ public class AnimationChain implements GuiAnimation {
     }
 
     public void stop() {
+        isActive = false;
         if (activeAnimation != null) {
             activeAnimation.stop();
         }
     }
 
     public void start() {
+        isActive = true;
         activeAnimation = animations[0];
         activeAnimation.start();
     }
 
     private void startNext(int currentIndex) {
-        if (currentIndex + 1 >= animations.length) {
-            if (looping) {
-                activeAnimation = animations[0];
-            } else {
-                if (stopHandler != null) {
-                    stopHandler.accept(true);
+        if (isActive) {
+            if (currentIndex + 1 >= animations.length) {
+                if (looping) {
+                    activeAnimation = animations[0];
+                } else {
+                    if (stopHandler != null) {
+                        stopHandler.accept(true);
+                    }
+                    activeAnimation = null;
+                    isActive = false;
                 }
-                activeAnimation = null;
+            } else {
+                activeAnimation = animations[currentIndex + 1];
             }
-        } else {
-            activeAnimation = animations[currentIndex + 1];
-        }
 
-        if (activeAnimation != null) {
-            activeAnimation.start();
+            if (activeAnimation != null) {
+                activeAnimation.start();
+            }
         }
     }
 }
