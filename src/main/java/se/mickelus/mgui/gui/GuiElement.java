@@ -54,7 +54,10 @@ public class GuiElement extends AbstractGui {
     }
 
     public void updateAnimations() {
-        activeAnimations.removeIf(keyframeAnimation -> !keyframeAnimation.isActive());
+//        activeAnimations.stream()
+//                .filter(animation -> !animation.isActive())
+//                .forEach(KeyframeAnimation::stop);
+        activeAnimations.removeIf(animation -> !animation.isActive());
         activeAnimations.forEach(KeyframeAnimation::preDraw);
     }
 
@@ -107,11 +110,10 @@ public class GuiElement extends AbstractGui {
         return 0;
     }
 
-    public boolean onClick(int x, int y) {
-        // iterate reverse, elements rendered last (=topmost) should intercept clicks first
+    public boolean onMouseClick(int x, int y, int button) {
         for (int i = elements.size() - 1; i >= 0; i--) {
             if (elements.get(i).isVisible()) {
-                if (elements.get(i).onClick(x, y)) {
+                if (elements.get(i).onMouseClick(x, y, button)) {
                     return true;
                 }
             }
@@ -120,8 +122,57 @@ public class GuiElement extends AbstractGui {
         return false;
     }
 
-    public void mouseReleased(int x, int y) {
-        elements.forEach(element -> element.mouseReleased(x, y));
+    public void onMouseRelease(int x, int y, int button) {
+        elements.forEach(element -> element.onMouseRelease(x, y, button));
+    }
+
+
+    public boolean onMouseScroll(double mouseX, double mouseY, double distance) {
+        for (int i = elements.size() - 1; i >= 0; i--) {
+            if (elements.get(i).isVisible()) {
+                if (elements.get(i).onMouseScroll(mouseX, mouseY, distance)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public boolean onKeyPress(int keyCode, int scanCode, int modifiers) {
+        for (int i = elements.size() - 1; i >= 0; i--) {
+            if (elements.get(i).isVisible()) {
+                if (elements.get(i).onKeyPress(keyCode, scanCode, modifiers)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public boolean onKeyRelease(int keyCode, int scanCode, int modifiers) {
+        for (int i = elements.size() - 1; i >= 0; i--) {
+            if (elements.get(i).isVisible()) {
+                if (elements.get(i).onKeyRelease(keyCode, scanCode, modifiers)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public boolean onCharType(char character, int modifiers) {
+        for (int i = elements.size() - 1; i >= 0; i--) {
+            if (elements.get(i).isVisible()) {
+                if (elements.get(i).onCharType(character, modifiers)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     protected void calculateFocusState(int refX, int refY, int mouseX, int mouseY) {
@@ -168,12 +219,22 @@ public class GuiElement extends AbstractGui {
         this.y = y;
     }
 
+    /**
+     * Set which point, relative this element, that it should be positioned on.
+     * @param attachment
+     * @return
+     */
     public GuiElement setAttachmentPoint(GuiAttachment attachment) {
         attachmentPoint = attachment;
 
         return this;
     }
 
+    /**
+     * Set which point, relative the parent, that this element should be positioned on.
+     * @param attachment
+     * @return
+     */
     public GuiElement setAttachmentAnchor(GuiAttachment attachment) {
         attachmentAnchor = attachment;
 
@@ -185,6 +246,14 @@ public class GuiElement extends AbstractGui {
         attachmentAnchor = attachment;
 
         return this;
+    }
+
+    public GuiAttachment getAttachmentPoint() {
+        return attachmentPoint;
+    }
+
+    public GuiAttachment getAttachmentAnchor() {
+        return attachmentAnchor;
     }
 
     public int getWidth() {

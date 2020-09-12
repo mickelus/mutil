@@ -18,7 +18,7 @@ public class GuiClickable extends GuiElement {
     }
 
     @Override
-    public boolean onClick(int x, int y) {
+    public boolean onMouseClick(int x, int y, int button) {
         if (hasFocus()) {
             onClickHandler.run();
             return true;

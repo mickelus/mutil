@@ -30,8 +30,8 @@ public class GuiButton extends GuiClickable {
     }
 
     @Override
-    public boolean onClick(int x, int y) {
-        return enabled && super.onClick(x, y);
+    public boolean onMouseClick(int x, int y, int button) {
+        return enabled && super.onMouseClick(x, y, button);
     }
 
     private void updateColor() {
