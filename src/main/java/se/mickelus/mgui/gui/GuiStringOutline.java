@@ -10,42 +10,42 @@ public class GuiStringOutline extends GuiString {
         super(x, y, string);
         drawShadow = false;
 
-        cleanString = TextFormatting.getTextWithoutFormattingCodes(string);
+        cleanString = TextFormatting.getTextWithoutFormattingCodes(this.string);
     }
 
     public GuiStringOutline(int x, int y, int width, String string) {
         super(x, y, width, string);
         drawShadow = false;
 
-        cleanString = TextFormatting.getTextWithoutFormattingCodes(string);
+        cleanString = TextFormatting.getTextWithoutFormattingCodes(this.string);
     }
 
     public GuiStringOutline(int x, int y, String string, GuiAttachment attachment) {
         super(x, y, string, attachment);
         drawShadow = false;
 
-        cleanString = TextFormatting.getTextWithoutFormattingCodes(string);
+        cleanString = TextFormatting.getTextWithoutFormattingCodes(this.string);
     }
 
     public GuiStringOutline(int x, int y, String string, int color) {
         super(x, y, string, color);
         drawShadow = false;
 
-        cleanString = TextFormatting.getTextWithoutFormattingCodes(string);
+        cleanString = TextFormatting.getTextWithoutFormattingCodes(this.string);
     }
 
     public GuiStringOutline(int x, int y, String string, int color, GuiAttachment attachment) {
         super(x, y, string, color, attachment);
         drawShadow = false;
 
-        cleanString = TextFormatting.getTextWithoutFormattingCodes(string);
+        cleanString = TextFormatting.getTextWithoutFormattingCodes(this.string);
     }
 
     @Override
     public void setString(String string) {
         super.setString(string);
 
-        cleanString = TextFormatting.getTextWithoutFormattingCodes(string);
+        cleanString = TextFormatting.getTextWithoutFormattingCodes(this.string);
     }
 
     @Override
