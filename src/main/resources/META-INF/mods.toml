@@ -1,6 +1,7 @@
 modLoader="javafml"
-loaderVersion="[32,)"
+loaderVersion="[34,)"
 issueTrackerURL="https://github.com/mickelus/mgui/issues"
+license="MIT"
 
 [[mods]]
 modId="mgui"
@@ -15,13 +16,13 @@ View library for minecraft mods.
 [[dependencies.mgui]] #optional
     modId="forge"
     mandatory=true
-    versionRange="[32,)"
+    versionRange="[34,)"
     ordering="NONE"
     side="BOTH"
 # Here's another dependency
 [[dependencies.mgui]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.1]"
+    versionRange="[1.16.3]"
     ordering="NONE"
     side="BOTH"
