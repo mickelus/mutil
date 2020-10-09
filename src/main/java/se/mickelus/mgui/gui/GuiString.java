@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import se.mickelus.mgui.gui.animation.KeyframeAnimation;
 
 public class GuiString extends GuiElement {
@@ -90,11 +91,13 @@ public class GuiString extends GuiElement {
         // if the vanilla fontrender considers the color to be almost transparent (0xfc) it flips the opacity back to 1
         if ((color & -67108864) != 0) {
             matrixStack.push();
-            matrixStack.translate(0.0D, 0.0D, 300.0D);
+
+            // todo: why was this needed? removed as it breaks in world rendering
+//            matrixStack.translate(0.0D, 0.0D, 300.0D);
             IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 
             // packed light value is magic copied from FontRender.renderString
-            fontRenderer.renderString(text, (float)x, (float)y, color, drawShadow, matrixStack.getLast().getMatrix(), renderTypeBuffer, false, 0, 15728880);
+            fontRenderer.renderString(text, (float)x, (float)y, color, drawShadow, matrixStack.getLast().getMatrix(), renderTypeBuffer, true, 0, 15728880);
 
             renderTypeBuffer.finish();
             matrixStack.pop();
