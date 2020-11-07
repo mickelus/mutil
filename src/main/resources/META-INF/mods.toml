@@ -23,6 +23,6 @@ View library for minecraft mods.
 [[dependencies.mgui]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.3]"
+    versionRange="[1.16.3,]"
     ordering="NONE"
     side="BOTH"
