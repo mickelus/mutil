@@ -17,6 +17,7 @@ public class GuiText extends GuiElement {
     FontRenderer fontRenderer;
 
     String string;
+    int color = 0xffffff;
 
     public GuiText(int x, int y, int width, String string) {
         super(x, y, width ,0);
@@ -31,9 +32,13 @@ public class GuiText extends GuiElement {
         height = fontRenderer.getWordWrappedHeight(this.string, width);
     }
 
+    public void setColor(int color) {
+        this.color = color;
+    }
+
     @Override
     public void draw(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
-        renderText(fontRenderer, matrixStack, string, refX + x, refY + y, width, 0xffffff, opacity);
+        renderText(fontRenderer, matrixStack, string, refX + x, refY + y, width, color, opacity);
     }
 
     protected static void renderText(FontRenderer fontRenderer, MatrixStack matrixStack, String string, int x, int y, int width, int color,
@@ -50,7 +55,7 @@ public class GuiText extends GuiElement {
 //                lineX += (float)(width - i);
 //            }
 
-            fontRenderer.func_238416_a_(line, lineX, (float)y, colorWithOpacity(color, opacity), false, matrix, buffer, false, 0, 15728880);
+            fontRenderer.func_238416_a_(line, lineX, (float)y, colorWithOpacity(color, opacity), true, matrix, buffer, false, 0, 15728880);
 
             buffer.finish();
 
