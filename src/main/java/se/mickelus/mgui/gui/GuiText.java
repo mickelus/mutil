@@ -39,6 +39,8 @@ public class GuiText extends GuiElement {
     @Override
     public void draw(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         renderText(fontRenderer, matrixStack, string, refX + x, refY + y, width, color, opacity);
+
+        super.draw(matrixStack, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
     }
 
     protected static void renderText(FontRenderer fontRenderer, MatrixStack matrixStack, String string, int x, int y, int width, int color,

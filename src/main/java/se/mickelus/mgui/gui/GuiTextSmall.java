@@ -20,5 +20,8 @@ public class GuiTextSmall extends GuiText {
         matrixStack.scale(.5f, .5f, .5f);
         renderText(fontRenderer, matrixStack, string, (refX + x) * 2, (refY + y) * 2, width * 2, 0xffffff, opacity);
         matrixStack.pop();
+
+        calculateFocusState(refX, refY, mouseX, mouseY);
+        drawChildren(matrixStack, refX + x, refY + y, screenWidth, screenHeight, mouseX, mouseY, opacity * this.opacity);
     }
 }
