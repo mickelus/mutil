@@ -33,12 +33,25 @@ public class GuiHorizontalScrollable extends GuiElement {
         return this;
     }
 
+    public double getOffset() {
+        return scrollOffset;
+    }
+
+    public void setOffset(double offset) {
+        scrollOffset = MathHelper.clamp(offset, min, max);
+    }
+
+    public int getOffsetMax() {
+        return max;
+    }
+
     /**
      * Call when child layout/sizes change to cause bounds to update on next scroll.
      */
     public void markDirty() {
         dirty = true;
     }
+
 
     private void calculateBounds() {
         int tempMax = 0;
@@ -49,6 +62,7 @@ public class GuiHorizontalScrollable extends GuiElement {
             tempMax = Math.max(x + element.getWidth(), tempMax);
         }
         this.max = Math.max(tempMax - width, 0);
+        scrollOffset = MathHelper.clamp(scrollOffset, min, max);
 
         dirty = false;
     }
@@ -56,9 +70,6 @@ public class GuiHorizontalScrollable extends GuiElement {
     @Override
     public boolean onMouseScroll(double mouseX, double mouseY, double distance) {
         if (isGlobal || hasFocus()) {
-            if (dirty) {
-                calculateBounds();
-            }
 
             if (Math.signum(scrollVelocity) != Math.signum(-distance)) {
                 scrollVelocity = 0;
@@ -90,6 +101,10 @@ public class GuiHorizontalScrollable extends GuiElement {
 
         lastDraw = now;
         super.drawChildren(matrixStack, refX - (int) scrollOffset, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
+
+        if (dirty) {
+            calculateBounds();
+        }
     }
 
     @Override
