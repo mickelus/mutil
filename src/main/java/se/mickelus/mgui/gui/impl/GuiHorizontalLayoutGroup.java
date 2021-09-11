@@ -24,6 +24,10 @@ public class GuiHorizontalLayoutGroup extends GuiElement {
         needsLayout = true;
     }
 
+    public void forceLayout() {
+        layoutChildren();
+    }
+
     private void layoutChildren() {
         int offset = 0;
 
