@@ -1,22 +1,18 @@
 package se.mickelus.mgui.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import com.mojang.blaze3d.platform.Lighting;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class GuiItem extends GuiElement {
-
     private Minecraft mc;
-    private Font fontRenderer;
 
     private ItemStack itemStack;
 
@@ -58,34 +54,24 @@ public class GuiItem extends GuiElement {
         this.itemStack = itemStack;
         setVisible(itemStack != null);
 
-        if (itemStack != null) {
-            fontRenderer = null; // itemStack.getItem().getFontRenderer(itemStack); // FIXME: does 1.18 have an equivalent?
-
-            if (fontRenderer == null) {
-                fontRenderer = mc.font;
-            }
-        }
-
         return this;
     }
+
     // todo 1.16: opacity no longer works, did it ever work?
     @Override
     public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         super.draw(matrixStack, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
 
         if (opacity * getOpacity() >= opacityThreshold) {
-            PoseStack renderSystemStack = RenderSystem.getModelViewStack();
-            renderSystemStack.pushPose();
-            RenderSystem.enableDepthTest();
-            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                    GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            // Lighting.turnBackOn(); // FIXME
+            RenderSystem.applyModelViewMatrix();
+            setBlitOffset(200);
+            mc.getItemRenderer().blitOffset = 200.0F;
             mc.getItemRenderer().renderAndDecorateItem(itemStack, refX + x, refY + y);
-            // Lighting.turnOff(); // FIXME
-            mc.getItemRenderer().renderGuiItemDecorations(fontRenderer, itemStack, refX + x, refY + y, getCountString());
 
-            RenderSystem.disableDepthTest();
-            renderSystemStack.popPose();
+            Font font = net.minecraftforge.client.RenderProperties.get(itemStack).getFont(itemStack);
+            mc.getItemRenderer().renderGuiItemDecorations(font != null ? font : mc.font, itemStack, refX + x, refY + y, getCountString());
+            setBlitOffset(0);
+            mc.getItemRenderer().blitOffset = 0.0F;
         }
     }
 

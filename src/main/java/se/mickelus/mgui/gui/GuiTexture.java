@@ -1,6 +1,8 @@
 package se.mickelus.mgui.gui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 public class GuiTexture extends GuiElement {
@@ -42,5 +44,20 @@ public class GuiTexture extends GuiElement {
 
         drawTexture(matrixStack, textureLocation, refX + x, refY + y, width, height, textureX, textureY,
                 color, getOpacity() * opacity);
+    }
+
+    protected void drawTexture(PoseStack matrixStack, ResourceLocation textureLocation, int x, int y, int width, int height,
+            int u, int v, int color, float opacity) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(
+                (color >> 16 & 255) / 255f, // red
+                (color >> 8 & 255) / 255f,  // green
+                (color & 255) / 255f,       // blue
+                opacity);
+        RenderSystem.setShaderTexture(0, textureLocation);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.enableDepthTest();
+        this.blit(matrixStack, x, y, u, v, width, height);
     }
 }

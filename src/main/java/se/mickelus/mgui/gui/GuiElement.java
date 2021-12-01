@@ -1,10 +1,7 @@
 package se.mickelus.mgui.gui;
 
-import com.mojang.blaze3d.vertex.*;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.resources.ResourceLocation;
 import se.mickelus.mgui.gui.animation.KeyframeAnimation;
 
 import java.util.*;
@@ -374,36 +371,6 @@ public class GuiElement extends GuiComponent {
 
     protected static void drawRect(PoseStack matrixStack, int left, int top, int right, int bottom, int color, float opacity) {
         fill(matrixStack, left, top, right, bottom, colorWithOpacity(color, opacity));
-    }
-
-    protected static void drawTexture(PoseStack matrixStack, ResourceLocation textureLocation, int x, int y, int width, int height,
-            int u, int v, int color, float opacity) {
-        PoseStack renderSystemStack = RenderSystem.getModelViewStack();
-        renderSystemStack.pushPose();
-        Minecraft.getInstance().getTextureManager().bindForSetup(textureLocation);
-
-        // todo: change vertex format to POSITION_COLOR_TEX, push color on buffer and skip using RenderSystem?
-        // FIXME: Clean up porting mess
-        // There's functionality for this in NativeImage, but deobf mapping is incorrect for rgb functions which makes for very confuss
-        // RenderSystem.color4f(
-        //        (color >> 16 & 255) / 255f,
-        //        (color >> 8 & 255) / 255f,
-        //        (color & 255) / 255f,
-        //        opacity);
-
-        RenderSystem.enableBlend();
-        // RenderSystem.enableAlphaTest();
-
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder buffer = tessellator.getBuilder();
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX); // GL11.GL_QUADS
-        buffer.vertex(matrixStack.last().pose(), x, y + height, 0).uv(u / 256f, (v + height) / 256f).endVertex();
-        buffer.vertex(matrixStack.last().pose(), x + width, y + height, 0).uv((u + width) / 256f, (v + height) / 256f).endVertex();
-        buffer.vertex(matrixStack.last().pose(), x + width, y, 0).uv((u + width) / 256f, v / 256f).endVertex();
-        buffer.vertex(matrixStack.last().pose(), x, y, 0).uv(u / 256f, v / 256f).endVertex();
-        tessellator.end();
-
-        renderSystemStack.popPose();
     }
 
     protected static int colorWithOpacity(int color, float opacity) {
