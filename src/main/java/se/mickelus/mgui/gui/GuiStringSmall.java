@@ -1,6 +1,6 @@
 package se.mickelus.mgui.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import se.mickelus.mgui.gui.animation.KeyframeAnimation;
 
 public class GuiStringSmall extends GuiString {
@@ -69,7 +69,7 @@ public class GuiStringSmall extends GuiString {
     }
 
     @Override
-    public void draw(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+    public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         calculateFocusState(refX, refY, mouseX, mouseY);
         activeAnimations.removeIf(keyframeAnimation -> !keyframeAnimation.isActive());
         activeAnimations.forEach(KeyframeAnimation::preDraw);

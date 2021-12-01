@@ -1,7 +1,7 @@
 package se.mickelus.mgui.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.util.ResourceLocation;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Texture with half "pixel" offset
@@ -17,7 +17,7 @@ public class GuiTextureOffset extends GuiTexture {
     }
 
     @Override
-    public void draw(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+    public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         calculateFocusState(refX, refY, mouseX, mouseY);
         drawChildren(matrixStack, refX + x, refY + y, screenWidth, screenHeight, mouseX, mouseY, opacity * this.opacity);
 

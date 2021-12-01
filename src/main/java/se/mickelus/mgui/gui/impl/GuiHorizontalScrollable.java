@@ -1,10 +1,10 @@
 package se.mickelus.mgui.gui.impl;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 import se.mickelus.mgui.gui.GuiElement;
 
 public class GuiHorizontalScrollable extends GuiElement {
@@ -38,7 +38,7 @@ public class GuiHorizontalScrollable extends GuiElement {
     }
 
     public void setOffset(double offset) {
-        scrollOffset = MathHelper.clamp(offset, min, max);
+        scrollOffset = Mth.clamp(offset, min, max);
     }
 
     public int getOffsetMax() {
@@ -62,7 +62,7 @@ public class GuiHorizontalScrollable extends GuiElement {
             tempMax = Math.max(x + element.getWidth(), tempMax);
         }
         this.max = Math.max(tempMax - width, 0);
-        scrollOffset = MathHelper.clamp(scrollOffset, min, max);
+        scrollOffset = Mth.clamp(scrollOffset, min, max);
 
         dirty = false;
     }
@@ -76,7 +76,7 @@ public class GuiHorizontalScrollable extends GuiElement {
             }
 
             scrollVelocity -= distance * 12;
-            scrollOffset = MathHelper.clamp(scrollOffset - distance * 6, min, max);
+            scrollOffset = Mth.clamp(scrollOffset - distance * 6, min, max);
 //            Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, (float) (0.5f + (scrollOffset - min) / max), 0.3f));
 
             return true;
@@ -85,7 +85,7 @@ public class GuiHorizontalScrollable extends GuiElement {
     }
 
     @Override
-    protected void drawChildren(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+    protected void drawChildren(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         long now = System.currentTimeMillis();
         if (scrollVelocity != 0) {
             double dist = (scrollVelocity * 0.2 + Math.signum(scrollVelocity) * 1) * (now - lastDraw) / 1000 * 50;
@@ -96,7 +96,7 @@ public class GuiHorizontalScrollable extends GuiElement {
                 scrollVelocity -= dist;
             }
 
-            scrollOffset = MathHelper.clamp(scrollOffset + dist, min, max);
+            scrollOffset = Mth.clamp(scrollOffset + dist, min, max);
         }
 
         lastDraw = now;

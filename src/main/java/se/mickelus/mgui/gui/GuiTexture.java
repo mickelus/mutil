@@ -1,7 +1,7 @@
 package se.mickelus.mgui.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.util.ResourceLocation;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiTexture extends GuiElement {
 
@@ -37,7 +37,7 @@ public class GuiTexture extends GuiElement {
     }
 
     @Override
-    public void draw(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+    public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         super.draw(matrixStack, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
 
         drawTexture(matrixStack, textureLocation, refX + x, refY + y, width, height, textureX, textureY,

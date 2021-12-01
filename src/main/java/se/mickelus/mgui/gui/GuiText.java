@@ -1,20 +1,20 @@
 package se.mickelus.mgui.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
+import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.util.FormattedCharSequence;
+import com.mojang.math.Matrix4f;
 import net.minecraft.util.text.ITextProperties;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.TextComponent;
 
 import java.util.List;
 
 public class GuiText extends GuiElement {
 
-    FontRenderer fontRenderer;
+    Font fontRenderer;
 
     String string;
     int color = 0xffffff;
@@ -37,20 +37,20 @@ public class GuiText extends GuiElement {
     }
 
     @Override
-    public void draw(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+    public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         renderText(fontRenderer, matrixStack, string, refX + x, refY + y, width, color, opacity);
 
         super.draw(matrixStack, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
     }
 
-    protected static void renderText(FontRenderer fontRenderer, MatrixStack matrixStack, String string, int x, int y, int width, int color,
+    protected static void renderText(Font fontRenderer, PoseStack matrixStack, String string, int x, int y, int width, int color,
             float opacity) {
-        List<IReorderingProcessor> list = fontRenderer.split(new StringTextComponent(string), width);
+        List<FormattedCharSequence> list = fontRenderer.split(new TextComponent(string), width);
         Matrix4f matrix = matrixStack.last().pose();
 
-        for(IReorderingProcessor line : list) {
+        for(FormattedCharSequence line : list) {
             float lineX = (float) x;
-            IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
+            MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 
 //            if (fontRenderer.getBidiFlag()) {
 //                int i = fontRenderer.getStringWidth(fontRenderer.bidiReorder(line.));

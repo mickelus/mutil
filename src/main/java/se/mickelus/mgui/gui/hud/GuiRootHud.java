@@ -1,13 +1,13 @@
 package se.mickelus.mgui.gui.hud;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.Vec3;
+import com.mojang.math.Vector3f;
 import se.mickelus.mgui.gui.GuiElement;
 import se.mickelus.mgui.gui.animation.KeyframeAnimation;
 
@@ -17,17 +17,17 @@ public class GuiRootHud extends GuiElement {
         super(0, 0, 0, 0);
     }
 
-    public void draw(MatrixStack matrixStack, Vector3d proj, BlockRayTraceResult rayTrace, VoxelShape shape) {
+    public void draw(PoseStack matrixStack, Vec3 proj, BlockHitResult rayTrace, VoxelShape shape) {
         BlockPos blockPos = rayTrace.getBlockPos();
 
-        Vector3d hitVec = rayTrace.getLocation();
+        Vec3 hitVec = rayTrace.getLocation();
 
         draw(matrixStack, blockPos.getX() - proj.x, blockPos.getY() - proj.y, blockPos.getZ() - proj.z,
                 hitVec.x - blockPos.getX(), hitVec.y - blockPos.getY(), hitVec.z - blockPos.getZ(),
                 rayTrace.getDirection(), shape.bounds());
     }
 
-    public void draw(MatrixStack matrixStack, double x, double y, double z, double hitX, double hitY, double hitZ, Direction facing, AxisAlignedBB boundingBox) {
+    public void draw(PoseStack matrixStack, double x, double y, double z, double hitX, double hitY, double hitZ, Direction facing, AABB boundingBox) {
         activeAnimations.removeIf(keyframeAnimation -> !keyframeAnimation.isActive());
         activeAnimations.forEach(KeyframeAnimation::preDraw);
 
@@ -40,7 +40,7 @@ public class GuiRootHud extends GuiElement {
         float size = 64;
 
         // magic number is the same used to offset the outline, stops textures from flickering
-        Vector3d magicOffset = Vector3d.atLowerCornerOf(facing.getNormal()).scale(0.0020000000949949026D);
+        Vec3 magicOffset = Vec3.atLowerCornerOf(facing.getNormal()).scale(0.0020000000949949026D);
         matrixStack.translate(magicOffset.x(), magicOffset.y(), magicOffset.z());
 
         switch (facing) {

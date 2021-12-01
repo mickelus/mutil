@@ -1,13 +1,13 @@
 package se.mickelus.mgui.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.GuiComponent;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import se.mickelus.mgui.gui.animation.KeyframeAnimation;
 
@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 // todo 1.14: used to extend Gui, should extend GuiAbstract?
-public class GuiElement extends AbstractGui {
+public class GuiElement extends GuiComponent {
 
     protected int x;
     protected int y;
@@ -48,7 +48,7 @@ public class GuiElement extends AbstractGui {
         activeAnimations = new HashSet<>();
     }
 
-    public void draw(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+    public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         calculateFocusState(refX, refY, mouseX, mouseY);
         drawChildren(matrixStack, refX + x, refY + y, screenWidth, screenHeight, mouseX, mouseY, opacity * this.opacity);
     }
@@ -61,7 +61,7 @@ public class GuiElement extends AbstractGui {
         activeAnimations.forEach(KeyframeAnimation::preDraw);
     }
 
-    protected void drawChildren(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+    protected void drawChildren(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         elements.removeIf(GuiElement::shouldRemove);
         elements.stream()
                 .filter(GuiElement::isVisible)
@@ -376,11 +376,11 @@ public class GuiElement extends AbstractGui {
     }
 
 
-    protected static void drawRect(MatrixStack matrixStack, int left, int top, int right, int bottom, int color, float opacity) {
+    protected static void drawRect(PoseStack matrixStack, int left, int top, int right, int bottom, int color, float opacity) {
         fill(matrixStack, left, top, right, bottom, colorWithOpacity(color, opacity));
     }
 
-    protected static void drawTexture(MatrixStack matrixStack, ResourceLocation textureLocation, int x, int y, int width, int height,
+    protected static void drawTexture(PoseStack matrixStack, ResourceLocation textureLocation, int x, int y, int width, int height,
             int u, int v, int color, float opacity) {
         RenderSystem.pushMatrix();
         Minecraft.getInstance().getTextureManager().bind(textureLocation);
@@ -396,9 +396,9 @@ public class GuiElement extends AbstractGui {
         RenderSystem.enableBlend();
         RenderSystem.enableAlphaTest();
 
-        Tessellator tessellator = Tessellator.getInstance();
+        Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder buffer = tessellator.getBuilder();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormat.POSITION_TEX);
         buffer.vertex(matrixStack.last().pose(), x, y + height, 0).uv(u / 256f, (v + height) / 256f).endVertex();
         buffer.vertex(matrixStack.last().pose(), x + width, y + height, 0).uv((u + width) / 256f, (v + height) / 256f).endVertex();
         buffer.vertex(matrixStack.last().pose(), x + width, y, 0).uv((u + width) / 256f, v / 256f).endVertex();

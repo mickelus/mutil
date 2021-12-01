@@ -1,6 +1,6 @@
 package se.mickelus.mgui.gui.impl;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import se.mickelus.mgui.gui.GuiElement;
 
 public class GuiVerticalLayoutGroup extends GuiElement {
@@ -42,7 +42,7 @@ public class GuiVerticalLayoutGroup extends GuiElement {
     }
 
     @Override
-    protected void drawChildren(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+    protected void drawChildren(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         if (needsLayout) {
             layoutChildren();
         }

@@ -1,11 +1,11 @@
 package se.mickelus.mgui.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
+import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import se.mickelus.mgui.gui.animation.KeyframeAnimation;
 
@@ -13,7 +13,7 @@ public class GuiString extends GuiElement {
 
     protected String string;
 
-    protected FontRenderer fontRenderer;
+    protected Font fontRenderer;
 
     protected int color = 0xffffffff;
     protected boolean drawShadow = true;
@@ -78,14 +78,14 @@ public class GuiString extends GuiElement {
     }
 
     @Override
-    public void draw(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+    public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         activeAnimations.removeIf(keyframeAnimation -> !keyframeAnimation.isActive());
         activeAnimations.forEach(KeyframeAnimation::preDraw);
         RenderSystem.enableBlend();
         drawString(matrixStack, string, refX + x, refY + y, color, opacity * getOpacity(), drawShadow);
     }
 
-    protected void drawString(MatrixStack matrixStack, String text, int x, int y, int color, float opacity, boolean drawShadow) {
+    protected void drawString(PoseStack matrixStack, String text, int x, int y, int color, float opacity, boolean drawShadow) {
         color = colorWithOpacity(color, opacity);
 
         // if the vanilla fontrender considers the color to be almost transparent (0xfc) it flips the opacity back to 1
@@ -94,7 +94,7 @@ public class GuiString extends GuiElement {
 
             // todo: why was this needed? removed as it breaks in world rendering
 //            matrixStack.translate(0.0D, 0.0D, 300.0D);
-            IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
+            MultiBufferSource.BufferSource renderTypeBuffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 
             // packed light value is magic copied from FontRender.renderString
             fontRenderer.drawInBatch(text, (float)x, (float)y, color, drawShadow, matrixStack.last().pose(), renderTypeBuffer, true, 0, 15728880);

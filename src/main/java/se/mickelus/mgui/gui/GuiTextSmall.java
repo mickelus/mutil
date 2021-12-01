@@ -1,6 +1,6 @@
 package se.mickelus.mgui.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 public class GuiTextSmall extends GuiText {
 
@@ -15,7 +15,7 @@ public class GuiTextSmall extends GuiText {
     }
 
     @Override
-    public void draw(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+    public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         matrixStack.pushPose();
         matrixStack.scale(.5f, .5f, .5f);
         renderText(fontRenderer, matrixStack, string, (refX + x) * 2, (refY + y) * 2, width * 2, 0xffffff, opacity);

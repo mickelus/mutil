@@ -1,22 +1,22 @@
 package se.mickelus.mgui.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderHelper;
+import com.mojang.blaze3d.platform.Lighting;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.crash.ReportedException;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class GuiItem extends GuiElement {
 
     private Minecraft mc;
-    private FontRenderer fontRenderer;
+    private Font fontRenderer;
 
     private ItemStack itemStack;
 
@@ -78,7 +78,7 @@ public class GuiItem extends GuiElement {
     }
     // todo 1.16: opacity no longer works, did it ever work?
     @Override
-    public void draw(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+    public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         super.draw(matrixStack, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
 
         if (opacity * getOpacity() >= opacityThreshold) {
@@ -86,9 +86,9 @@ public class GuiItem extends GuiElement {
             RenderSystem.enableDepthTest();
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
                     GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            RenderHelper.turnBackOn();
+            Lighting.turnBackOn();
             mc.getItemRenderer().renderAndDecorateItem(itemStack, refX + x, refY + y);
-            RenderHelper.turnOff();
+            Lighting.turnOff();
             mc.getItemRenderer().renderGuiItemDecorations(fontRenderer, itemStack, refX + x, refY + y, getCountString());
 
             RenderSystem.disableDepthTest();
@@ -113,9 +113,9 @@ public class GuiItem extends GuiElement {
     public List<String> getTooltipLines() {
         if (showTooltip && itemStack != null && hasFocus()) {
             return itemStack.getTooltipLines(Minecraft.getInstance().player,
-                    this.mc.options.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL)
+                    this.mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL)
                     .stream()
-                    .map(ITextComponent::getString)
+                    .map(Component::getString)
                     .collect(Collectors.toList());
         }
 

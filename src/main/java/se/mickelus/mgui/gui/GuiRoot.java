@@ -1,7 +1,7 @@
 package se.mickelus.mgui.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.MainWindow;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
 
 public class GuiRoot extends GuiElement {
@@ -15,14 +15,14 @@ public class GuiRoot extends GuiElement {
 
     public void draw() {
         if (isVisible()) {
-            MainWindow window = mc.getWindow();
+            Window window = mc.getWindow();
 
             width = window.getGuiScaledWidth();
             height = window.getGuiScaledHeight();
             double mouseX = mc.mouseHandler.xpos() * width / window.getScreenWidth();
             double mouseY = mc.mouseHandler.ypos() * height / window.getScreenHeight();
 
-            drawChildren(new MatrixStack(), 0, 0, width, height, (int) mouseX, (int) mouseY, 1);
+            drawChildren(new PoseStack(), 0, 0, width, height, (int) mouseX, (int) mouseY, 1);
         }
     }
 }
