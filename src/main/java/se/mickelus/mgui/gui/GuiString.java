@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import com.mojang.blaze3d.vertex.Tesselator;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import se.mickelus.mgui.gui.animation.KeyframeAnimation;
 
 public class GuiString extends GuiElement {

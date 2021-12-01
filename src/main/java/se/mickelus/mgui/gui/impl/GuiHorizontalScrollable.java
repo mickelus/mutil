@@ -1,9 +1,6 @@
 package se.mickelus.mgui.gui.impl;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.Mth;
 import se.mickelus.mgui.gui.GuiElement;
 

@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.util.FormattedCharSequence;
 import com.mojang.math.Matrix4f;
-import net.minecraft.util.text.ITextProperties;
 import net.minecraft.network.chat.TextComponent;
 
 import java.util.List;

@@ -5,16 +5,8 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import com.mojang.blaze3d.platform.Lighting;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.crash.CrashReport;
-import net.minecraft.crash.CrashReportCategory;
-import net.minecraft.crash.ReportedException;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.Component;
 
@@ -67,7 +59,7 @@ public class GuiItem extends GuiElement {
         setVisible(itemStack != null);
 
         if (itemStack != null) {
-            fontRenderer = itemStack.getItem().getFontRenderer(itemStack);
+            fontRenderer = null; // itemStack.getItem().getFontRenderer(itemStack); // FIXME: does 1.18 have an equivalent?
 
             if (fontRenderer == null) {
                 fontRenderer = mc.font;
@@ -82,17 +74,18 @@ public class GuiItem extends GuiElement {
         super.draw(matrixStack, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
 
         if (opacity * getOpacity() >= opacityThreshold) {
-            RenderSystem.pushMatrix();
+            PoseStack renderSystemStack = RenderSystem.getModelViewStack();
+            renderSystemStack.pushPose();
             RenderSystem.enableDepthTest();
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
                     GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            Lighting.turnBackOn();
+            // Lighting.turnBackOn(); // FIXME
             mc.getItemRenderer().renderAndDecorateItem(itemStack, refX + x, refY + y);
-            Lighting.turnOff();
+            // Lighting.turnOff(); // FIXME
             mc.getItemRenderer().renderGuiItemDecorations(fontRenderer, itemStack, refX + x, refY + y, getCountString());
 
             RenderSystem.disableDepthTest();
-            RenderSystem.popMatrix();
+            renderSystemStack.popPose();
         }
     }
 
