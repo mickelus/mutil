@@ -24,17 +24,17 @@ public class ToggleableSlot extends SlotItemHandler {
     }
 
     @Override
-    public boolean isEnabled() {
+    public boolean isActive() {
         return isEnabled;
     }
 
     @Override
-    public boolean canTakeStack(PlayerEntity playerIn) {
+    public boolean mayPickup(PlayerEntity playerIn) {
         return isEnabled;
     }
 
     @Override
-    public boolean isItemValid(@Nullable ItemStack stack) {
+    public boolean mayPlace(@Nullable ItemStack stack) {
         return isEnabled;
     }
 }

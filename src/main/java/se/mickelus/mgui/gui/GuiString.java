@@ -23,10 +23,10 @@ public class GuiString extends GuiElement {
     public GuiString(int x, int y, String string) {
         super(x, y, 0, 9);
 
-        fontRenderer = Minecraft.getInstance().fontRenderer;
+        fontRenderer = Minecraft.getInstance().font;
 
         this.string = string;
-        width = fontRenderer.getStringWidth(string);
+        width = fontRenderer.width(string);
     }
 
     public GuiString(int x, int y, int width, String string) {
@@ -34,9 +34,9 @@ public class GuiString extends GuiElement {
 
         fixedWidth = true;
 
-        fontRenderer = Minecraft.getInstance().fontRenderer;
+        fontRenderer = Minecraft.getInstance().font;
 
-        this.string = fontRenderer.func_238412_a_(string, width);
+        this.string = fontRenderer.plainSubstrByWidth(string, width);
     }
 
     public GuiString(int x, int y, String string, GuiAttachment attachment) {
@@ -64,10 +64,10 @@ public class GuiString extends GuiElement {
     public void setString(String string) {
         if (string != null && !string.equals(this.string)) {
             if (fixedWidth) {
-                this.string = fontRenderer.func_238412_a_(string, width);
+                this.string = fontRenderer.plainSubstrByWidth(string, width);
             } else {
                 this.string = string;
-                width = fontRenderer.getStringWidth(string);
+                width = fontRenderer.width(string);
             }
         }
     }
@@ -90,17 +90,17 @@ public class GuiString extends GuiElement {
 
         // if the vanilla fontrender considers the color to be almost transparent (0xfc) it flips the opacity back to 1
         if ((color & -67108864) != 0) {
-            matrixStack.push();
+            matrixStack.pushPose();
 
             // todo: why was this needed? removed as it breaks in world rendering
 //            matrixStack.translate(0.0D, 0.0D, 300.0D);
-            IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+            IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
 
             // packed light value is magic copied from FontRender.renderString
-            fontRenderer.renderString(text, (float)x, (float)y, color, drawShadow, matrixStack.getLast().getMatrix(), renderTypeBuffer, true, 0, 15728880);
+            fontRenderer.drawInBatch(text, (float)x, (float)y, color, drawShadow, matrixStack.last().pose(), renderTypeBuffer, true, 0, 15728880);
 
-            renderTypeBuffer.finish();
-            matrixStack.pop();
+            renderTypeBuffer.endBatch();
+            matrixStack.popPose();
         }
     }
 }

@@ -22,14 +22,14 @@ public class GuiText extends GuiElement {
     public GuiText(int x, int y, int width, String string) {
         super(x, y, width ,0);
 
-        fontRenderer = Minecraft.getInstance().fontRenderer;
+        fontRenderer = Minecraft.getInstance().font;
         setString(string);
     }
 
     public void setString(String string) {
         this.string = string.replace("\\n", "\n");
 
-        height = fontRenderer.getWordWrappedHeight(this.string, width);
+        height = fontRenderer.wordWrapHeight(this.string, width);
     }
 
     public void setColor(int color) {
@@ -45,21 +45,21 @@ public class GuiText extends GuiElement {
 
     protected static void renderText(FontRenderer fontRenderer, MatrixStack matrixStack, String string, int x, int y, int width, int color,
             float opacity) {
-        List<IReorderingProcessor> list = fontRenderer.trimStringToWidth(new StringTextComponent(string), width);
-        Matrix4f matrix = matrixStack.getLast().getMatrix();
+        List<IReorderingProcessor> list = fontRenderer.split(new StringTextComponent(string), width);
+        Matrix4f matrix = matrixStack.last().pose();
 
         for(IReorderingProcessor line : list) {
             float lineX = (float) x;
-            IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+            IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
 
 //            if (fontRenderer.getBidiFlag()) {
 //                int i = fontRenderer.getStringWidth(fontRenderer.bidiReorder(line.));
 //                lineX += (float)(width - i);
 //            }
 
-            fontRenderer.func_238416_a_(line, lineX, (float)y, colorWithOpacity(color, opacity), true, matrix, buffer, false, 0, 15728880);
+            fontRenderer.drawInBatch(line, lineX, (float)y, colorWithOpacity(color, opacity), true, matrix, buffer, false, 0, 15728880);
 
-            buffer.finish();
+            buffer.endBatch();
 
             y += 9;
         }

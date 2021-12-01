@@ -73,9 +73,9 @@ public class GuiStringSmall extends GuiString {
         calculateFocusState(refX, refY, mouseX, mouseY);
         activeAnimations.removeIf(keyframeAnimation -> !keyframeAnimation.isActive());
         activeAnimations.forEach(KeyframeAnimation::preDraw);
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.scale(.5f, .5f, .5f);
         drawString(matrixStack, string, refX * 2 + x, refY * 2 + y, color, opacity * getOpacity(), drawShadow);
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 }

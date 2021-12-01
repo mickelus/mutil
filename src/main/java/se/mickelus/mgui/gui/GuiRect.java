@@ -27,10 +27,10 @@ public class GuiRect extends GuiElement {
     public void draw(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         super.draw(matrixStack, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
         if (offset) {
-            matrixStack.push();
+            matrixStack.pushPose();
             matrixStack.translate(0.5F, 0.5F, 0);
             drawRect(matrixStack, refX + x, refY + y, refX + x + width - 1, refY + y + height - 1, color, opacity * getOpacity());
-            matrixStack.pop();
+            matrixStack.popPose();
         } else {
             drawRect(matrixStack, refX + x, refY + y, refX + x + width, refY + y + height, color, opacity * getOpacity());
         }

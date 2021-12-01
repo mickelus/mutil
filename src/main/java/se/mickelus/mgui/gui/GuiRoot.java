@@ -15,12 +15,12 @@ public class GuiRoot extends GuiElement {
 
     public void draw() {
         if (isVisible()) {
-            MainWindow window = mc.getMainWindow();
+            MainWindow window = mc.getWindow();
 
-            width = window.getScaledWidth();
-            height = window.getScaledHeight();
-            double mouseX = mc.mouseHelper.getMouseX() * width / window.getWidth();
-            double mouseY = mc.mouseHelper.getMouseY() * height / window.getHeight();
+            width = window.getGuiScaledWidth();
+            height = window.getGuiScaledHeight();
+            double mouseX = mc.mouseHandler.xpos() * width / window.getScreenWidth();
+            double mouseY = mc.mouseHandler.ypos() * height / window.getScreenHeight();
 
             drawChildren(new MatrixStack(), 0, 0, width, height, (int) mouseX, (int) mouseY, 1);
         }

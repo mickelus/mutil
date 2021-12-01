@@ -13,12 +13,12 @@ public class DisabledSlot extends Slot {
     }
 
     @Override
-    public boolean canTakeStack(PlayerEntity playerIn) {
+    public boolean mayPickup(PlayerEntity playerIn) {
         return false;
     }
 
     @Override
-    public boolean isItemValid(@Nullable ItemStack stack) {
+    public boolean mayPlace(@Nullable ItemStack stack) {
         return false;
     }
 }

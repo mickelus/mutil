@@ -11,15 +11,15 @@ public class GuiTextSmall extends GuiText {
     public void setString(String string) {
         this.string = string.replace("\\n", "\n");
 
-        height = fontRenderer.getWordWrappedHeight(this.string, width * 2) / 2;
+        height = fontRenderer.wordWrapHeight(this.string, width * 2) / 2;
     }
 
     @Override
     public void draw(MatrixStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.scale(.5f, .5f, .5f);
         renderText(fontRenderer, matrixStack, string, (refX + x) * 2, (refY + y) * 2, width * 2, 0xffffff, opacity);
-        matrixStack.pop();
+        matrixStack.popPose();
 
         calculateFocusState(refX, refY, mouseX, mouseY);
         drawChildren(matrixStack, refX + x, refY + y, screenWidth, screenHeight, mouseX, mouseY, opacity * this.opacity);

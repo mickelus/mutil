@@ -21,10 +21,10 @@ public class GuiTextureOffset extends GuiTexture {
         calculateFocusState(refX, refY, mouseX, mouseY);
         drawChildren(matrixStack, refX + x, refY + y, screenWidth, screenHeight, mouseX, mouseY, opacity * this.opacity);
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0.5F, 0.5F, 0);
         drawTexture(matrixStack, textureLocation, refX + x, refY + y, width - 1, height - 1, textureX, textureY,
                 color, getOpacity() * opacity);
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 }

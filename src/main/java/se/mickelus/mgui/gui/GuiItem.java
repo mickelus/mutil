@@ -70,7 +70,7 @@ public class GuiItem extends GuiElement {
             fontRenderer = itemStack.getItem().getFontRenderer(itemStack);
 
             if (fontRenderer == null) {
-                fontRenderer = mc.fontRenderer;
+                fontRenderer = mc.font;
             }
         }
 
@@ -86,10 +86,10 @@ public class GuiItem extends GuiElement {
             RenderSystem.enableDepthTest();
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
                     GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            RenderHelper.enableStandardItemLighting();
-            mc.getItemRenderer().renderItemAndEffectIntoGUI(itemStack, refX + x, refY + y);
-            RenderHelper.disableStandardItemLighting();
-            mc.getItemRenderer().renderItemOverlayIntoGUI(fontRenderer, itemStack, refX + x, refY + y, getCountString());
+            RenderHelper.turnBackOn();
+            mc.getItemRenderer().renderAndDecorateItem(itemStack, refX + x, refY + y);
+            RenderHelper.turnOff();
+            mc.getItemRenderer().renderGuiItemDecorations(fontRenderer, itemStack, refX + x, refY + y, getCountString());
 
             RenderSystem.disableDepthTest();
             RenderSystem.popMatrix();
@@ -112,8 +112,8 @@ public class GuiItem extends GuiElement {
     @Override
     public List<String> getTooltipLines() {
         if (showTooltip && itemStack != null && hasFocus()) {
-            return itemStack.getTooltip(Minecraft.getInstance().player,
-                    this.mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL)
+            return itemStack.getTooltipLines(Minecraft.getInstance().player,
+                    this.mc.options.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL)
                     .stream()
                     .map(ITextComponent::getString)
                     .collect(Collectors.toList());
