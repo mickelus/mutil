@@ -1,2 +1,2 @@
-# Mgui
-Hierarchical view rendering for minecraft with animation support and an anchor based layout system.
+# Mutil
+Formerly mgui, contains helpers for data management, networking and gui setup.

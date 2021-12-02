@@ -1,26 +1,26 @@
 modLoader="javafml"
 loaderVersion="[38,)"
-issueTrackerURL="https://github.com/mickelus/mgui/issues"
+issueTrackerURL="https://github.com/mickelus/mutil/issues"
 license="MIT"
 
 [[mods]]
-modId="mgui"
+modId="mutil"
 version="${file.jarVersion}"
-displayName="mgui"
-displayURL="https://github.com/mickelus/mgui"
+displayName="mutil"
+displayURL="https://github.com/mickelus/mutil"
 authors="Mickelus"
 description='''
 View library for minecraft mods.
 '''
 
-[[dependencies.mgui]] #optional
+[[dependencies.mutil]] #optional
     modId="forge"
     mandatory=true
     versionRange="[38,)"
     ordering="NONE"
     side="BOTH"
 # Here's another dependency
-[[dependencies.mgui]]
+[[dependencies.mutil]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.18,1.18.1)"
