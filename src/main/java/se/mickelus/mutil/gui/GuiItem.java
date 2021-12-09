@@ -1,5 +1,6 @@
 package se.mickelus.mutil.gui;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -64,14 +65,16 @@ public class GuiItem extends GuiElement {
 
         if (opacity * getOpacity() >= opacityThreshold) {
             RenderSystem.applyModelViewMatrix();
-            setBlitOffset(200);
-            mc.getItemRenderer().blitOffset = 200.0F;
+            setBlitOffset(0);
+            mc.getItemRenderer().blitOffset = 0;
+            RenderSystem.enableDepthTest();
+            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                    GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             mc.getItemRenderer().renderAndDecorateItem(itemStack, refX + x, refY + y);
 
             Font font = net.minecraftforge.client.RenderProperties.get(itemStack).getFont(itemStack);
             mc.getItemRenderer().renderGuiItemDecorations(font != null ? font : mc.font, itemStack, refX + x, refY + y, getCountString());
-            setBlitOffset(0);
-            mc.getItemRenderer().blitOffset = 0.0F;
+            RenderSystem.disableDepthTest();
         }
     }
 
