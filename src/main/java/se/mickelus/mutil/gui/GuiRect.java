@@ -1,5 +1,6 @@
 package se.mickelus.mutil.gui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 public class GuiRect extends GuiElement {
@@ -26,6 +27,7 @@ public class GuiRect extends GuiElement {
     @Override
     public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         super.draw(matrixStack, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
         if (offset) {
             matrixStack.pushPose();
             matrixStack.translate(0.5F, 0.5F, 0);
