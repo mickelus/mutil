@@ -57,7 +57,6 @@ public class GuiTexture extends GuiElement {
         RenderSystem.setShaderTexture(0, textureLocation);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
         this.blit(matrixStack, x, y, u, v, width, height);
     }
 }
