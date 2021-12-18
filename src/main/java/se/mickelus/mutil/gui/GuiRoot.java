@@ -14,6 +14,10 @@ public class GuiRoot extends GuiElement {
     }
 
     public void draw() {
+        draw(new PoseStack());
+    }
+
+    public void draw(PoseStack poseStack) {
         if (isVisible()) {
             Window window = mc.getWindow();
 
@@ -22,7 +26,7 @@ public class GuiRoot extends GuiElement {
             double mouseX = mc.mouseHandler.xpos() * width / window.getScreenWidth();
             double mouseY = mc.mouseHandler.ypos() * height / window.getScreenHeight();
 
-            drawChildren(new PoseStack(), 0, 0, width, height, (int) mouseX, (int) mouseY, 1);
+            drawChildren(poseStack, 0, 0, width, height, (int) mouseX, (int) mouseY, 1);
         }
     }
 }
