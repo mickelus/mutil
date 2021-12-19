@@ -5,7 +5,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
@@ -71,12 +74,17 @@ public class PacketHandler {
             if (ctx.get().getDirection().getReceptionSide().isServer()) {
                 message.handle(ctx.get().getSender());
             } else {
-                message.handle(Minecraft.getInstance().player);
+                message.handle(getClientPlayer());
             }
         });
         ctx.get().setPacketHandled(true);
 
         return null;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private Player getClientPlayer() {
+        return Minecraft.getInstance().player;
     }
 
     public void sendTo(AbstractPacket message, ServerPlayer player) {
@@ -91,6 +99,7 @@ public class PacketHandler {
         channel.send(PacketDistributor.NEAR.with(PacketDistributor.TargetPoint.p(pos.getX(), pos.getY(), pos.getZ(), r2, dim)), message);
     }
 
+    @OnlyIn(Dist.CLIENT)
     public void sendToServer(AbstractPacket message) {
         // crashes sometimes happen due to the connection being null
         if (Minecraft.getInstance().getConnection() != null) {
