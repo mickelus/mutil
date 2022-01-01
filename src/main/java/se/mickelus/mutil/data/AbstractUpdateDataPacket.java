@@ -13,9 +13,8 @@ import java.util.stream.Collectors;
 
 @ParametersAreNonnullByDefault
 public abstract class AbstractUpdateDataPacket extends AbstractPacket {
-
-    private String directory;
-    private Map<ResourceLocation, String> data;
+    protected String directory;
+    protected Map<ResourceLocation, String> data;
 
     public AbstractUpdateDataPacket() {}
 
