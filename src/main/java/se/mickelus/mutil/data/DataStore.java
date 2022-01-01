@@ -14,14 +14,11 @@ import net.minecraftforge.forgespi.Environment;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import se.mickelus.mutil.network.AbstractPacket;
-import se.mickelus.mutil.network.PacketHandler;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 @ParametersAreNonnullByDefault
@@ -34,8 +31,6 @@ public class DataStore<V> extends SimplePreparableReloadListener<Map<ResourceLoc
     protected String directory;
     protected Class<V> dataClass;
     private DataDistributor syncronizer;
-    private PacketHandler packetHandler;
-    private BiFunction<String, Map<ResourceLocation, JsonElement>, AbstractPacket> packeteer;
 
     protected Map<ResourceLocation, JsonElement> rawData;
     protected Map<ResourceLocation, V> dataMap;
