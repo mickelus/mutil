@@ -16,7 +16,7 @@ View library for minecraft mods.
 [[dependencies.mutil]] #optional
     modId="forge"
     mandatory=true
-    versionRange="[39,)"
+    versionRange="[38,)"
     ordering="NONE"
     side="BOTH"
 # Here's another dependency
