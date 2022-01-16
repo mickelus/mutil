@@ -82,6 +82,30 @@ public class GuiHorizontalScrollable extends GuiElement {
     }
 
     @Override
+    public void updateFocusState(int refX, int refY, int mouseX, int mouseY) {
+        elements.stream()
+                .filter(GuiElement::isVisible)
+                .forEach(element -> element.updateFocusState(
+                        refX + x + getXOffset(this, element.getAttachmentAnchor()) - getXOffset(element, element.getAttachmentPoint()) - (int) scrollOffset,
+                        refY + y + getYOffset(this, element.getAttachmentAnchor()) - getYOffset(element, element.getAttachmentPoint()),
+                        mouseX, mouseY));
+
+        boolean gainFocus = mouseX >= getX() + refX
+                && mouseX < getX() + refX + getWidth()
+                && mouseY >= getY() + refY
+                && mouseY < getY() + refY + getHeight();
+
+        if (gainFocus != hasFocus) {
+            hasFocus = gainFocus;
+            if (hasFocus) {
+                onFocus();
+            } else {
+                onBlur();
+            }
+        }
+    }
+
+    @Override
     protected void drawChildren(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         long now = System.currentTimeMillis();
         if (scrollVelocity != 0) {
