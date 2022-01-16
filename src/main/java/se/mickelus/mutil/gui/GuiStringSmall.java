@@ -52,25 +52,7 @@ public class GuiStringSmall extends GuiString {
     }
 
     @Override
-    protected void calculateFocusState(int refX, int refY, int mouseX, int mouseY) {
-        boolean gainFocus = mouseX >= getX() + refX
-                && mouseX < getX() + refX + getWidth()
-                && mouseY >= getY() + refY
-                && mouseY < getY() + refY + getHeight();
-
-        if (gainFocus != hasFocus) {
-            hasFocus = gainFocus;
-            if (hasFocus) {
-                onFocus();
-            } else {
-                onBlur();
-            }
-        }
-    }
-
-    @Override
     public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
-        calculateFocusState(refX, refY, mouseX, mouseY);
         activeAnimations.removeIf(keyframeAnimation -> !keyframeAnimation.isActive());
         activeAnimations.forEach(KeyframeAnimation::preDraw);
         matrixStack.pushPose();

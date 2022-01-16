@@ -18,7 +18,6 @@ public class GuiTextureOffset extends GuiTexture {
 
     @Override
     public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
-        calculateFocusState(refX, refY, mouseX, mouseY);
         drawChildren(matrixStack, refX + x, refY + y, screenWidth, screenHeight, mouseX, mouseY, opacity * this.opacity);
 
         matrixStack.pushPose();

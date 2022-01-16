@@ -42,7 +42,6 @@ public class GuiElement extends GuiComponent {
     }
 
     public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
-        calculateFocusState(refX, refY, mouseX, mouseY);
         drawChildren(matrixStack, refX + x, refY + y, screenWidth, screenHeight, mouseX, mouseY, opacity * this.opacity);
     }
 
@@ -168,7 +167,14 @@ public class GuiElement extends GuiComponent {
         return false;
     }
 
-    protected void calculateFocusState(int refX, int refY, int mouseX, int mouseY) {
+    public void updateFocusState(int refX, int refY, int mouseX, int mouseY) {
+        elements.stream()
+                .filter(GuiElement::isVisible)
+                .forEach(element -> element.updateFocusState(
+                        refX + x + getXOffset(this, element.attachmentAnchor) - getXOffset(element, element.attachmentPoint),
+                        refY + y + getYOffset(this, element.attachmentAnchor) - getYOffset(element, element.attachmentPoint),
+                        mouseX, mouseY));
+
         boolean gainFocus = mouseX >= getX() + refX
                 && mouseX < getX() + refX + getWidth()
                 && mouseY >= getY() + refY
