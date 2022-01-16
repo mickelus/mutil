@@ -2,6 +2,7 @@ package se.mickelus.mutil.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.network.chat.Component;
 import se.mickelus.mutil.gui.animation.KeyframeAnimation;
 
 import java.util.*;
@@ -361,9 +362,7 @@ public class GuiElement extends GuiComponent {
                 .collect(Collectors.toList());
     }
 
-    // todo 1.16: rewrite to use ITextComponent instead of String
-    @Deprecated
-    public List<String> getTooltipLines() {
+    public List<Component> getTooltipLines() {
         if (isVisible()) {
             return elements.stream()
                     .map(GuiElement::getTooltipLines)

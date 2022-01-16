@@ -66,8 +66,11 @@ public class GuiHorizontalScrollable extends GuiElement {
 
     @Override
     public boolean onMouseScroll(double mouseX, double mouseY, double distance) {
-        if (isGlobal || hasFocus()) {
+        if (super.onMouseScroll(mouseX, mouseY, distance)) {
+            return true;
+        }
 
+        if (isGlobal || hasFocus()) {
             if (Math.signum(scrollVelocity) != Math.signum(-distance)) {
                 scrollVelocity = 0;
             }

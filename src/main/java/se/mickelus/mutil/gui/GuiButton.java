@@ -1,6 +1,7 @@
 package se.mickelus.mutil.gui;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import se.mickelus.mutil.gui.impl.GuiColors;
 
 import java.util.Collections;
@@ -10,7 +11,7 @@ public class GuiButton extends GuiClickable {
     private final GuiStringOutline textElement;
 
     private boolean enabled = true;
-    private String disabledTooltip;
+    private Component disabledTooltip;
 
     public GuiButton(int x, int y, int width, int height, String text, Runnable onClick) {
         super(x, y, width, height, onClick);
@@ -23,7 +24,7 @@ public class GuiButton extends GuiClickable {
         this(x, y, Minecraft.getInstance().font.width(text), 10, text, onClick);
     }
 
-    public GuiButton(int x, int y, int width, int height, String text, Runnable onClick, String disabledTooltip) {
+    public GuiButton(int x, int y, int width, int height, String text, Runnable onClick, Component disabledTooltip) {
         this(x, y, width, height, text, onClick);
 
         this.disabledTooltip = disabledTooltip;
@@ -65,7 +66,7 @@ public class GuiButton extends GuiClickable {
     }
 
     @Override
-    public List<String> getTooltipLines() {
+    public List<Component> getTooltipLines() {
         if (!enabled && disabledTooltip != null && hasFocus()) {
             return Collections.singletonList(disabledTooltip);
         }

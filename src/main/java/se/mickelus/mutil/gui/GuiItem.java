@@ -9,8 +9,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class GuiItem extends GuiElement {
     private Minecraft mc;
@@ -101,21 +101,17 @@ public class GuiItem extends GuiElement {
     }
 
     @Override
-    public List<String> getTooltipLines() {
+    public List<Component> getTooltipLines() {
         if (showTooltip && itemStack != null && hasFocus()) {
-            return itemStack.getTooltipLines(Minecraft.getInstance().player,
-                    this.mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL)
-                    .stream()
-                    .map(Component::getString)
-                    .collect(Collectors.toList());
+            return new ArrayList<>(itemStack.getTooltipLines(Minecraft.getInstance().player,
+                    mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL));
         }
 
         return null;
     }
 
     public enum CountMode {
-        /** shows if count is > 1 **/
-        normal,
+        normal, // shows if count is > 1
 
         always,
         never
