@@ -23,6 +23,8 @@ public class GuiItem extends GuiElement {
     private float opacityThreshold = 1;
     private boolean resetDepthTest = true;
 
+    private boolean renderDecoration = true;
+
     public GuiItem(int x, int y) {
         super(x, y, 16, 16);
 
@@ -64,6 +66,11 @@ public class GuiItem extends GuiElement {
         return this;
     }
 
+    public GuiItem setRenderDecoration(boolean shouldRender) {
+        this.renderDecoration = shouldRender;
+        return this;
+    }
+
     // todo 1.16: opacity no longer works, did it ever work?
     @Override
     public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
@@ -78,8 +85,10 @@ public class GuiItem extends GuiElement {
                     GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             mc.getItemRenderer().renderAndDecorateItem(itemStack, refX + x, refY + y);
 
-            Font font = net.minecraftforge.client.RenderProperties.get(itemStack).getFont(itemStack);
-            mc.getItemRenderer().renderGuiItemDecorations(font != null ? font : mc.font, itemStack, refX + x, refY + y, getCountString());
+            if (renderDecoration) {
+                Font font = net.minecraftforge.client.RenderProperties.get(itemStack).getFont(itemStack);
+                mc.getItemRenderer().renderGuiItemDecorations(font != null ? font : mc.font, itemStack, refX + x, refY + y, getCountString());
+            }
 
             if (resetDepthTest) {
                 RenderSystem.disableDepthTest();
