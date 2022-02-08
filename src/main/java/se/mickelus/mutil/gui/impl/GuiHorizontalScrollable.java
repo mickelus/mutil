@@ -49,6 +49,9 @@ public class GuiHorizontalScrollable extends GuiElement {
         dirty = true;
     }
 
+    public void forceRefreshBounds() {
+        calculateBounds();
+    }
 
     private void calculateBounds() {
         int tempMax = 0;
