@@ -23,7 +23,7 @@ apply plugin: 'maven-publish'
 def getGitTag = { ->
     def stdout = new ByteArrayOutputStream()
     exec {
-        commandLine 'git', 'describe', '--abbrev=0'
+        commandLine 'git', 'describe', '--tags', '--abbrev=0'
         standardOutput = stdout
     }
     return stdout.toString().replace("\n", "").replace("\r", "").trim()
