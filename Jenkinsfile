@@ -5,9 +5,6 @@ pipeline {
     tools {
         jdk "jdk-17.0.1"
     }
-    environment {
-        isCI = "true"
-    }
     stages {
         stage('Clean') {
             steps {
