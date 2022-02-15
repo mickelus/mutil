@@ -20,7 +20,16 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = "${mc_version}-${mutil_version}"
+def getGitTag = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'describe', '--abbrev=0'
+        standardOutput = stdout
+    }
+    return stdout.toString().replace("\n", "").replace("\r", "").trim()
+}
+
+version = "${mc_version}-${getGitTag()}"
 group = 'se.mickelus.mutil'
 archivesBaseName = "mutil"
 
