@@ -108,6 +108,7 @@ public class GuiRootHud extends GuiElement {
 
         matrixStack.scale(1 / size, -1 / size, 1 / size);
         matrixStack.translate(0.0D, 0, 0.02);
+        updateFocusState(0, 0, mouseX, mouseY);
         drawChildren(matrixStack, 0, 0, width, height, mouseX, mouseY, 1);
         matrixStack.popPose();
     }
