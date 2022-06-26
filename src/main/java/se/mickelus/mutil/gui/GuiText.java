@@ -1,13 +1,13 @@
 package se.mickelus.mutil.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.math.Matrix4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
-import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import com.mojang.math.Matrix4f;
-import net.minecraft.network.chat.TextComponent;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class GuiText extends GuiElement {
 
     protected static void renderText(Font fontRenderer, PoseStack matrixStack, String string, int x, int y, int width, int color,
             float opacity) {
-        List<FormattedCharSequence> list = fontRenderer.split(new TextComponent(string), width);
+        List<FormattedCharSequence> list = fontRenderer.split(Component.literal(string), width);
         Matrix4f matrix = matrixStack.last().pose();
 
         for(FormattedCharSequence line : list) {

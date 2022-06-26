@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -36,42 +37,33 @@ public abstract class MergingDataStore<V, U> extends DataStore<V> {
         Map<ResourceLocation, JsonElement> map = Maps.newHashMap();
         int i = this.directory.length() + 1;
 
-        for(ResourceLocation fullLocation : resourceManager.listResources(directory, rl -> rl.endsWith(".json"))) {
-            if (!namespace.equals(fullLocation.getNamespace())) {
+        for (Map.Entry<ResourceLocation, List<Resource>> entry : resourceManager.listResourceStacks(directory, rl -> rl.getPath().endsWith(".json")).entrySet()) {
+            if (!namespace.equals(entry.getKey().getNamespace())) {
                 continue;
             }
 
-            String path = fullLocation.getPath();
-            ResourceLocation location = new ResourceLocation(fullLocation.getNamespace(), path.substring(i, path.length() - jsonExtLength));
+            String path = entry.getKey().getPath();
+            ResourceLocation location = new ResourceLocation(entry.getKey().getNamespace(), path.substring(i, path.length() - jsonExtLength));
 
             JsonArray allResources = new JsonArray();
 
-            try {
-                for (Resource resource : resourceManager.getResources(fullLocation)) {
-                    try (
-                            InputStream inputstream = resource.getInputStream();
-                            Reader reader = new BufferedReader(new InputStreamReader(inputstream, StandardCharsets.UTF_8));
-                    ) {
-                        JsonObject json = GsonHelper.fromJson(gson, reader, JsonObject.class);
+            for (Resource resource : entry.getValue()) {
+                try (Reader reader = resource.openAsReader()) {
+                    JsonObject json = GsonHelper.fromJson(gson, reader, JsonObject.class);
 
-                        if (json != null) {
-                            if (shouldLoad(json)) {
-                                allResources.add(json);
-                            } else {
-                                logger.debug("Skipping data '{}' from '{}' due to condition", fullLocation, resource.getSourceName());
-                            }
+                    if (json != null) {
+                        if (shouldLoad(json)) {
+                            allResources.add(json);
                         } else {
-                            logger.error("Couldn't load data from '{}' in data pack '{}' as it's empty or null",
-                                    fullLocation, resource.getSourceName());
+                            logger.debug("Skipping data '{}' from '{}' due to condition", entry.getKey(), resource.sourcePackId());
                         }
-                    } catch (RuntimeException | IOException e) {
-                        logger.error("Couldn't load data from '{}' in data pack '{}'", fullLocation, resource.getSourceName(), e);
-                    } finally {
-                        IOUtils.closeQuietly(resource);
+                    } else {
+                        logger.error("Couldn't load data from '{}' in data pack '{}' as it's empty or null",
+                                entry.getKey(), resource.sourcePackId());
                     }
+                } catch (RuntimeException | IOException e) {
+                    logger.error("Couldn't load data from '{}' in data pack '{}'", entry.getKey(), resource.sourcePackId(), e);
                 }
-            } catch (IOException e) {
-                logger.error("Couldn't load data from '{}'", fullLocation, e);
             }
 
             if (allResources.size() > 0) {
