@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutionException;
 
 public class Perks {
     private static final Logger logger = LogManager.getLogger();
-    private static volatile PerkData data;
+    private static volatile Data data;
 
     public static void init(String uuid) {
         try {
@@ -26,26 +26,26 @@ public class Perks {
             HttpClient.newHttpClient()
                     .sendAsync(request, HttpResponse.BodyHandlers.ofString())
                     .thenApply(HttpResponse::body)
-                    .thenApply(body -> gson.fromJson(body, PerkData.class))
+                    .thenApply(body -> gson.fromJson(body, Data.class))
                     .thenAccept(Perks::setData)
                     .get();
         } catch (URISyntaxException | ExecutionException | InterruptedException e) {
             logger.error("Failed to get perk data");
             e.printStackTrace();
-            data = new PerkData();
+            data = new Data();
         }
     }
 
-    public static synchronized PerkData getData() {
+    public static synchronized Data getData() {
         return data;
     }
 
-    private static synchronized void setData(PerkData newData) {
+    private static synchronized void setData(Data newData) {
         logger.info("Got new perk data " + newData);
         data = newData;
     }
 
-    static class PerkData {
+    public static class Data {
         public int support;
         public int contribute;
         public int community;
