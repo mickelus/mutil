@@ -8,6 +8,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ public class GuiItem extends GuiElement {
     /**
      * Sets the opacity threshold for this element, the item will only render when the combined opacity of this element and it's parent is above the
      * threshold.
+     *
      * @param opacityThreshold
      * @return
      */
@@ -86,7 +88,7 @@ public class GuiItem extends GuiElement {
             mc.getItemRenderer().renderAndDecorateItem(itemStack, refX + x, refY + y);
 
             if (renderDecoration) {
-                Font font = net.minecraftforge.client.RenderProperties.get(itemStack).getFont(itemStack);
+                Font font = IClientItemExtensions.of(itemStack).getFont(itemStack, IClientItemExtensions.FontContext.ITEM_COUNT);
                 mc.getItemRenderer().renderGuiItemDecorations(font != null ? font : mc.font, itemStack, refX + x, refY + y, getCountString());
             }
 
