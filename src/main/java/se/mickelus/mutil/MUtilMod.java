@@ -11,6 +11,7 @@ public class MUtilMod {
     public static final String MOD_ID = "mutil";
 
     public MUtilMod() {
+        ConfigHandler.setup();
     }
 
     @SubscribeEvent
