@@ -1,6 +1,6 @@
 package se.mickelus.mutil.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class GuiTextSmall extends GuiText {
 
@@ -15,12 +15,12 @@ public class GuiTextSmall extends GuiText {
     }
 
     @Override
-    public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
-        matrixStack.pushPose();
-        matrixStack.scale(.5f, .5f, .5f);
-        renderText(fontRenderer, matrixStack, string, (refX + x) * 2, (refY + y) * 2, width * 2, 0xffffff, opacity);
-        matrixStack.popPose();
+    public void draw(final GuiGraphics graphics, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+        graphics.pose().pushPose();
+        graphics.pose().scale(.5f, .5f, .5f);
+        renderText(graphics, fontRenderer, string, (refX + x) * 2, (refY + y) * 2, width * 2, 0xffffff, opacity);
+        graphics.pose().popPose();
 
-        drawChildren(matrixStack, refX + x, refY + y, screenWidth, screenHeight, mouseX, mouseY, opacity * this.opacity);
+        drawChildren(graphics, refX + x, refY + y, screenWidth, screenHeight, mouseX, mouseY, opacity * this.opacity);
     }
 }

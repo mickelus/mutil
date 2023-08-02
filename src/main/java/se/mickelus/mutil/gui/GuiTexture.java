@@ -1,23 +1,19 @@
 package se.mickelus.mutil.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.function.Supplier;
 
 public class GuiTexture extends GuiElement {
 
     protected ResourceLocation textureLocation;
 
+    protected int textureWidth = 256;
+    protected int textureHeight = 256;
     protected int textureX;
     protected int textureY;
 
     protected int color = 0xffffff;
-
-    protected Supplier<ShaderInstance> shader = GameRenderer::getPositionTexShader;
     private boolean useDefaultBlending = true;
 
     public GuiTexture(int x, int y, int width, int height, ResourceLocation textureLocation) {
@@ -44,37 +40,39 @@ public class GuiTexture extends GuiElement {
         return this;
     }
 
-    public GuiTexture setShader(Supplier<ShaderInstance> shader) {
-        this.shader = shader;
+    public GuiTexture setSpriteSize(int width, int height) {
+        this.textureWidth = width;
+        this.textureHeight = height;
         return this;
     }
 
-    public void setUseDefaultBlending(boolean useDefault) {
+    public GuiTexture setUseDefaultBlending(boolean useDefault) {
         this.useDefaultBlending = useDefault;
+        return this;
     }
 
     @Override
-    public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
-        super.draw(matrixStack, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
+    public void draw(final GuiGraphics graphics, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY,
+            float opacity) {
+        super.draw(graphics, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
 
-        drawTexture(matrixStack, textureLocation, refX + x, refY + y, width, height, textureX, textureY,
-                color, getOpacity() * opacity);
+        drawTexture(graphics, textureLocation, refX + x, refY + y, width, height, textureX, textureY, color, getOpacity() * opacity);
     }
 
-    protected void drawTexture(PoseStack matrixStack, ResourceLocation textureLocation, int x, int y, int width, int height,
+    protected void drawTexture(final GuiGraphics graphics, ResourceLocation textureLocation, int x, int y, int width, int height,
             int u, int v, int color, float opacity) {
-        RenderSystem.setShader(shader);
-        RenderSystem.setShaderColor(
-                (color >> 16 & 255) / 255f, // red
-                (color >> 8 & 255) / 255f,  // green
-                (color & 255) / 255f,       // blue
-                opacity);
-        RenderSystem.setShaderTexture(0, textureLocation);
-        RenderSystem.enableBlend();
-
         if (useDefaultBlending) {
             RenderSystem.defaultBlendFunc();
         }
-        this.blit(matrixStack, x, y, u, v, width, height);
+
+        if (color != 0xffffff || opacity != 0) {
+            graphics.innerBlit(textureLocation, x, x + width, y, y + height, 0,
+                    u * 1f / textureWidth, (u + width) * 1f / textureWidth,
+                    v * 1f / textureHeight, (v + height) * 1f / textureHeight,
+                    (color >> 16 & 255) / 255f, (color >> 8 & 255) / 255f, (color & 255) / 255f, opacity);
+        }
+        else {
+            graphics.blit(textureLocation, x, y, 0, u, v, width, height, textureWidth, textureHeight);
+        }
     }
 }

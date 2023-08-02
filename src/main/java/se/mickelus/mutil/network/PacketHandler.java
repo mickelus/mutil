@@ -62,14 +62,14 @@ public class PacketHandler {
                     packet.fromBytes(buffer);
                     return packet;
                 })
-                .consumer(this::onMessage)
+                .consumerNetworkThread(this::onMessage)
                 .add();
 
         packets.add(packetClass);
         return true;
     }
 
-    public AbstractPacket onMessage(AbstractPacket message, Supplier<NetworkEvent.Context> ctx) {
+    public void onMessage(AbstractPacket message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             if (ctx.get().getDirection().getReceptionSide().isServer()) {
                 message.handle(ctx.get().getSender());
@@ -78,8 +78,6 @@ public class PacketHandler {
             }
         });
         ctx.get().setPacketHandled(true);
-
-        return null;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -88,7 +86,7 @@ public class PacketHandler {
     }
 
     public void sendTo(AbstractPacket message, ServerPlayer player) {
-        channel.sendTo(message, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+        channel.sendTo(message, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 
     public void sendToAllPlayers(AbstractPacket message) {

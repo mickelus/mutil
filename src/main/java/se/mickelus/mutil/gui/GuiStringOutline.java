@@ -2,6 +2,7 @@ package se.mickelus.mutil.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class GuiStringOutline extends GuiString {
     private String cleanString;
@@ -49,19 +50,19 @@ public class GuiStringOutline extends GuiString {
     }
 
     @Override
-    protected void drawString(PoseStack matrixStack, String text, int x, int y, int color, float opacity, boolean drawShadow) {
+    protected void drawString(final GuiGraphics graphics, String text, int x, int y, int color, float opacity, boolean drawShadow) {
 
-        super.drawString(matrixStack, cleanString, x - 1, y - 1, 0, opacity, false);
-        super.drawString(matrixStack, cleanString, x, y - 1, 0, opacity, false);
-        super.drawString(matrixStack, cleanString, x + 1, y - 1, 0, opacity, false);
+        super.drawString(graphics, cleanString, x - 1, y - 1, 0, opacity, false);
+        super.drawString(graphics, cleanString, x, y - 1, 0, opacity, false);
+        super.drawString(graphics, cleanString, x + 1, y - 1, 0, opacity, false);
 
-        super.drawString(matrixStack, cleanString, x - 1, y + 1, 0, opacity, false);
-        super.drawString(matrixStack, cleanString, x, y + 1, 0, opacity, false);
-        super.drawString(matrixStack, cleanString, x + 1, y + 1, 0, opacity, false);
+        super.drawString(graphics, cleanString, x - 1, y + 1, 0, opacity, false);
+        super.drawString(graphics, cleanString, x, y + 1, 0, opacity, false);
+        super.drawString(graphics, cleanString, x + 1, y + 1, 0, opacity, false);
 
-        super.drawString(matrixStack, cleanString, x + 1, y, 0, opacity, false);
-        super.drawString(matrixStack, cleanString, x - 1, y, 0, opacity, false);
+        super.drawString(graphics, cleanString, x + 1, y, 0, opacity, false);
+        super.drawString(graphics, cleanString, x - 1, y, 0, opacity, false);
 
-        super.drawString(matrixStack, text, x, y, color, opacity, false);
+        super.drawString(graphics, text, x, y, color, opacity, false);
     }
 }

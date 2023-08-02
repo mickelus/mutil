@@ -1,6 +1,6 @@
 package se.mickelus.mutil.gui.impl;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import se.mickelus.mutil.gui.GuiElement;
 
 public class GuiVerticalLayoutGroup extends GuiElement {
@@ -42,10 +42,10 @@ public class GuiVerticalLayoutGroup extends GuiElement {
     }
 
     @Override
-    protected void drawChildren(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+    protected void drawChildren(final GuiGraphics graphics, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         if (needsLayout) {
             layoutChildren();
         }
-        super.drawChildren(matrixStack, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
+        super.drawChildren(graphics, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
     }
 }

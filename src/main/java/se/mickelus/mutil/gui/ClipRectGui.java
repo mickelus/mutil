@@ -1,7 +1,6 @@
 package se.mickelus.mutil.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class ClipRectGui extends GuiElement {
     public ClipRectGui(int x, int y, int width, int height) {
@@ -9,30 +8,11 @@ public class ClipRectGui extends GuiElement {
     }
 
     @Override
-    protected void drawChildren(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
-        matrixStack.pushPose();
-        matrixStack.translate(0.0D, 0.0D, 950.0D);
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableBlend();
-        RenderSystem.colorMask(false, false, false, false);
-        fill(matrixStack, 4680, 2260, -4680, -2260, 0x01ffffff);
-        RenderSystem.colorMask(true, true, true, true);
-        matrixStack.translate(0.0D, 0.0D, -950.0D);
-        RenderSystem.depthFunc(518);
-        fill(matrixStack, refX + width, refY + height, refX, refY, 0x01ffffff);
-        RenderSystem.depthFunc(515);
-
-        super.drawChildren(matrixStack, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
-
-        RenderSystem.depthFunc(518);
-        matrixStack.translate(0.0D, 0.0D, -950.0D);
-        RenderSystem.colorMask(false, false, false, false);
-        fill(matrixStack, 4680, 2260, -4680, -2260, 0x01ffffff);
-        RenderSystem.colorMask(true, true, true, true);
-        RenderSystem.depthFunc(515);
-        matrixStack.popPose();
-        RenderSystem.applyModelViewMatrix();
-        RenderSystem.disableDepthTest();
+    protected void drawChildren(final GuiGraphics graphics, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY,
+            float opacity) {
+        graphics.enableScissor(refX, refY, refX + width, refY + height);
+        super.drawChildren(graphics, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
+        graphics.disableScissor();
     }
 
     @Override
@@ -46,7 +26,8 @@ public class ClipRectGui extends GuiElement {
             hasFocus = gainFocus;
             if (hasFocus) {
                 onFocus();
-            } else {
+            }
+            else {
                 onBlur();
             }
         }

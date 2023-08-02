@@ -1,12 +1,11 @@
 package se.mickelus.mutil.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class GuiRect extends GuiElement {
 
     private int color;
-    private boolean offset;
+    private final boolean offset;
 
     public GuiRect(int x, int y, int width, int height, int color) {
         this(x, y, width, height, color, false);
@@ -25,16 +24,17 @@ public class GuiRect extends GuiElement {
     }
 
     @Override
-    public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
-        super.draw(matrixStack, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
-        RenderSystem.setShaderColor(1, 1, 1, 1);
+    public void draw(final GuiGraphics graphics, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY,
+            float opacity) {
+        super.draw(graphics, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
         if (offset) {
-            matrixStack.pushPose();
-            matrixStack.translate(0.5F, 0.5F, 0);
-            drawRect(matrixStack, refX + x, refY + y, refX + x + width - 1, refY + y + height - 1, color, opacity * getOpacity());
-            matrixStack.popPose();
-        } else {
-            drawRect(matrixStack, refX + x, refY + y, refX + x + width, refY + y + height, color, opacity * getOpacity());
+            graphics.pose().pushPose();
+            graphics.pose().translate(0.5F, 0.5F, 0);
+            drawRect(graphics, refX + x, refY + y, refX + x + width - 1, refY + y + height - 1, color, opacity * getOpacity());
+            graphics.pose().popPose();
+        }
+        else {
+            drawRect(graphics, refX + x, refY + y, refX + x + width, refY + y + height, color, opacity * getOpacity());
         }
     }
 }

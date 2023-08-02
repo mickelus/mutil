@@ -1,6 +1,6 @@
 package se.mickelus.mutil.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class GuiClickable extends GuiElement {
 
@@ -13,8 +13,8 @@ public class GuiClickable extends GuiElement {
     }
 
     @Override
-    public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
-        super.draw(matrixStack, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
+    public void draw(final GuiGraphics graphics, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+        super.draw(graphics, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
     }
 
     @Override

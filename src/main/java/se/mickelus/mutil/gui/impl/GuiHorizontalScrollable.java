@@ -1,6 +1,6 @@
 package se.mickelus.mutil.gui.impl;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
 import se.mickelus.mutil.gui.GuiElement;
 
@@ -112,7 +112,7 @@ public class GuiHorizontalScrollable extends GuiElement {
     }
 
     @Override
-    protected void drawChildren(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+    protected void drawChildren(final GuiGraphics graphics, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         long now = System.currentTimeMillis();
         if (scrollVelocity != 0) {
             double dist = (scrollVelocity * 0.2 + Math.signum(scrollVelocity) * 1) * (now - lastDraw) / 1000 * 50;
@@ -127,7 +127,7 @@ public class GuiHorizontalScrollable extends GuiElement {
         }
 
         lastDraw = now;
-        super.drawChildren(matrixStack, refX - (int) scrollOffset, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
+        super.drawChildren(graphics, refX - (int) scrollOffset, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
 
         if (dirty) {
             calculateBounds();

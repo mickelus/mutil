@@ -2,14 +2,15 @@ package se.mickelus.mutil.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.math.Matrix4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
 import java.util.List;
+import org.joml.Matrix4f;
 
 public class GuiText extends GuiElement {
 
@@ -36,31 +37,26 @@ public class GuiText extends GuiElement {
     }
 
     @Override
-    public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
-        renderText(fontRenderer, matrixStack, string, refX + x, refY + y, width, color, opacity);
+    public void draw(final GuiGraphics graphics, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+        renderText(graphics, fontRenderer, string, refX + x, refY + y, width, color, opacity);
 
-        super.draw(matrixStack, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
+        super.draw(graphics, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
     }
 
-    protected static void renderText(Font fontRenderer, PoseStack matrixStack, String string, int x, int y, int width, int color,
-            float opacity) {
+    protected static void renderText(GuiGraphics graphics, Font fontRenderer, String string, int x, int y, int width, int color, float opacity) {
+        // todo 1.20: font rendering changed, test that it works
         List<FormattedCharSequence> list = fontRenderer.split(Component.literal(string), width);
-        Matrix4f matrix = matrixStack.last().pose();
-
         for(FormattedCharSequence line : list) {
-            float lineX = (float) x;
-            MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-
-//            if (fontRenderer.getBidiFlag()) {
+            graphics.drawString(fontRenderer, line, x, y, colorWithOpacity(color, opacity));
+            y += 9;
+//            float lineX = (float) x;
+//            MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+//                        if (fontRenderer.getBidiFlag()) {
 //                int i = fontRenderer.getStringWidth(fontRenderer.bidiReorder(line.));
 //                lineX += (float)(width - i);
 //            }
-
-            fontRenderer.drawInBatch(line, lineX, (float)y, colorWithOpacity(color, opacity), true, matrix, buffer, false, 0, 15728880);
-
-            buffer.endBatch();
-
-            y += 9;
+//            fontRenderer.drawInBatch(line, lineX, (float)y, colorWithOpacity(color, opacity), true, matrix, buffer, false, 0, 15728880);
+//            buffer.endBatch();
         }
     }
 }

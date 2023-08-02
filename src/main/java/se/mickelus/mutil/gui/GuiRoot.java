@@ -3,6 +3,7 @@ package se.mickelus.mutil.gui;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class GuiRoot extends GuiElement {
 
@@ -13,11 +14,7 @@ public class GuiRoot extends GuiElement {
         this.mc = mc;
     }
 
-    public void draw() {
-        draw(new PoseStack());
-    }
-
-    public void draw(PoseStack poseStack) {
+    public void draw(GuiGraphics graphics) {
         if (isVisible()) {
             Window window = mc.getWindow();
 
@@ -26,7 +23,7 @@ public class GuiRoot extends GuiElement {
             double mouseX = mc.mouseHandler.xpos() * width / window.getScreenWidth();
             double mouseY = mc.mouseHandler.ypos() * height / window.getScreenHeight();
 
-            drawChildren(poseStack, 0, 0, width, height, (int) mouseX, (int) mouseY, 1);
+            drawChildren(graphics, 0, 0, width, height, (int) mouseX, (int) mouseY, 1);
         }
     }
 }

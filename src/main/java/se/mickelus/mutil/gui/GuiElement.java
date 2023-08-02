@@ -1,16 +1,18 @@
 package se.mickelus.mutil.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiComponent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import se.mickelus.mutil.gui.animation.KeyframeAnimation;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-// todo 1.14: used to extend Gui, should extend GuiAbstract?
-public class GuiElement extends GuiComponent {
-
+// todo 1.20: GuiComponent became GuiGraphics extension no longer makes sense, still works?
+public class GuiElement {
     protected int x;
     protected int y;
     protected GuiAttachment attachmentPoint = GuiAttachment.topLeft;
@@ -42,26 +44,28 @@ public class GuiElement extends GuiComponent {
         activeAnimations = new HashSet<>();
     }
 
-    public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
-        drawChildren(matrixStack, refX + x, refY + y, screenWidth, screenHeight, mouseX, mouseY, opacity * this.opacity);
+    public void draw(final GuiGraphics graphics, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY,
+            float opacity) {
+        drawChildren(graphics, refX + x, refY + y, screenWidth, screenHeight, mouseX, mouseY, opacity * this.opacity);
     }
 
     public void updateAnimations() {
-//        activeAnimations.stream()
-//                .filter(animation -> !animation.isActive())
-//                .forEach(KeyframeAnimation::stop);
+        //        activeAnimations.stream()
+        //                .filter(animation -> !animation.isActive())
+        //                .forEach(KeyframeAnimation::stop);
         activeAnimations.removeIf(animation -> !animation.isActive());
         activeAnimations.forEach(KeyframeAnimation::preDraw);
     }
 
-    protected void drawChildren(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+    protected void drawChildren(final GuiGraphics graphics, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY,
+            float opacity) {
         elements.removeIf(GuiElement::shouldRemove);
         elements.stream()
                 .filter(GuiElement::isVisible)
                 .forEach((element -> {
                     element.updateAnimations();
                     element.draw(
-                            matrixStack, refX + getXOffset(this, element.attachmentAnchor) - getXOffset(element, element.attachmentPoint),
+                            graphics, refX + getXOffset(this, element.attachmentAnchor) - getXOffset(element, element.attachmentPoint),
                             refY + getYOffset(this, element.attachmentAnchor) - getYOffset(element, element.attachmentPoint),
                             screenWidth, screenHeight, mouseX, mouseY, opacity);
                 }));
@@ -118,7 +122,6 @@ public class GuiElement extends GuiComponent {
     public void onMouseRelease(int x, int y, int button) {
         elements.forEach(element -> element.onMouseRelease(x, y, button));
     }
-
 
     public boolean onMouseScroll(double mouseX, double mouseY, double distance) {
         for (int i = elements.size() - 1; i >= 0; i--) {
@@ -185,7 +188,8 @@ public class GuiElement extends GuiComponent {
             hasFocus = gainFocus;
             if (hasFocus) {
                 onFocus();
-            } else {
+            }
+            else {
                 onBlur();
             }
         }
@@ -221,8 +225,6 @@ public class GuiElement extends GuiComponent {
 
     /**
      * Set which point, relative this element, that it should be positioned on.
-     * @param attachment
-     * @return
      */
     public GuiElement setAttachmentPoint(GuiAttachment attachment) {
         attachmentPoint = attachment;
@@ -232,8 +234,6 @@ public class GuiElement extends GuiComponent {
 
     /**
      * Set which point, relative the parent, that this element should be positioned on.
-     * @param attachment
-     * @return
      */
     public GuiElement setAttachmentAnchor(GuiAttachment attachment) {
         attachmentAnchor = attachment;
@@ -276,7 +276,8 @@ public class GuiElement extends GuiComponent {
         if (isVisible != visible) {
             if (visible) {
                 onShow();
-            } else {
+            }
+            else {
                 if (!onHide()) {
                     return;
                 }
@@ -289,12 +290,12 @@ public class GuiElement extends GuiComponent {
         return isVisible;
     }
 
-    protected void onShow() {}
+    protected void onShow() {
+    }
 
     /**
      * Can be overridden to do something when the element is hidden. Returning false indicates that the handler will
      * take care of setting isVisible to false.
-     * @return
      */
     protected boolean onHide() {
         this.hasFocus = false;
@@ -351,9 +352,6 @@ public class GuiElement extends GuiComponent {
 
     /**
      * Return child elements which has the given type
-     * @param type
-     * @param <T>
-     * @return
      */
     public <T> List<T> getChildren(Class<T> type) {
         return elements.stream()
@@ -373,9 +371,8 @@ public class GuiElement extends GuiComponent {
         return null;
     }
 
-
-    protected static void drawRect(PoseStack matrixStack, int left, int top, int right, int bottom, int color, float opacity) {
-        fill(matrixStack, left, top, right, bottom, colorWithOpacity(color, opacity));
+    protected static void drawRect(final GuiGraphics graphics, int left, int top, int right, int bottom, int color, float opacity) {
+        graphics.fill(left, top, right, bottom, colorWithOpacity(color, opacity));
     }
 
     protected static int colorWithOpacity(int color, float opacity) {

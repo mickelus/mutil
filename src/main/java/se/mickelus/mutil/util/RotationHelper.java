@@ -45,7 +45,7 @@ public class RotationHelper {
         double x = pos.getX() * (double)f + pos.getZ() * (double)f1;
         double y = pos.getY();
         double z = pos.getZ() * (double)f - pos.getX() * (double)f1;
-        return new BlockPos(x, y, z);
+        return new BlockPos((int) Math.round(x), (int) Math.round(y), (int) Math.round(z));
     }
 
     public static BlockPos rotateDirection(BlockPos pos, Direction facing) {

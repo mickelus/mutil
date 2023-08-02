@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import com.mojang.blaze3d.vertex.Tesselator;
 import se.mickelus.mutil.gui.animation.KeyframeAnimation;
@@ -77,29 +78,19 @@ public class GuiString extends GuiElement {
     }
 
     @Override
-    public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+    public void draw(final GuiGraphics graphics, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         activeAnimations.removeIf(keyframeAnimation -> !keyframeAnimation.isActive());
         activeAnimations.forEach(KeyframeAnimation::preDraw);
         RenderSystem.enableBlend();
-        drawString(matrixStack, string, refX + x, refY + y, color, opacity * getOpacity(), drawShadow);
+        drawString(graphics, string, refX + x, refY + y, color, opacity * getOpacity(), drawShadow);
     }
 
-    protected void drawString(PoseStack matrixStack, String text, int x, int y, int color, float opacity, boolean drawShadow) {
+    protected void drawString(final GuiGraphics graphics, String text, int x, int y, int color, float opacity, boolean drawShadow) {
         color = colorWithOpacity(color, opacity);
 
         // if the vanilla fontrender considers the color to be almost transparent (0xfc) it flips the opacity back to 1
         if ((color & -67108864) != 0) {
-            matrixStack.pushPose();
-
-            // todo: why was this needed? removed as it breaks in world rendering
-//            matrixStack.translate(0.0D, 0.0D, 300.0D);
-            MultiBufferSource.BufferSource renderTypeBuffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-
-            // packed light value is magic copied from FontRender.renderString
-            fontRenderer.drawInBatch(text, (float)x, (float)y, color, drawShadow, matrixStack.last().pose(), renderTypeBuffer, true, 0, 15728880);
-
-            renderTypeBuffer.endBatch();
-            matrixStack.popPose();
+            graphics.drawString(fontRenderer, text, x, y, colorWithOpacity(color, opacity), drawShadow);
         }
     }
 }

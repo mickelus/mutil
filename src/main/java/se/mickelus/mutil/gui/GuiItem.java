@@ -2,9 +2,9 @@ package se.mickelus.mutil.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -73,23 +73,21 @@ public class GuiItem extends GuiElement {
         return this;
     }
 
-    // todo 1.16: opacity no longer works, did it ever work?
+    // todo 1.20: blitOffset gone, still works?
+    // todo 1.20: how to render decorations?
     @Override
-    public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
-        super.draw(matrixStack, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
+    public void draw(final GuiGraphics graphics, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+        super.draw(graphics, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
 
         if (opacity * getOpacity() >= opacityThreshold) {
             RenderSystem.applyModelViewMatrix();
-            setBlitOffset(0);
-            mc.getItemRenderer().blitOffset = 0;
             RenderSystem.enableDepthTest();
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
                     GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            mc.getItemRenderer().renderAndDecorateItem(itemStack, refX + x, refY + y);
+            graphics.renderItem(itemStack, refX + x, refY + y);
 
             if (renderDecoration) {
-                Font font = IClientItemExtensions.of(itemStack).getFont(itemStack, IClientItemExtensions.FontContext.ITEM_COUNT);
-                mc.getItemRenderer().renderGuiItemDecorations(font != null ? font : mc.font, itemStack, refX + x, refY + y, getCountString());
+
             }
 
             if (resetDepthTest) {

@@ -1,6 +1,6 @@
 package se.mickelus.mutil.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import se.mickelus.mutil.gui.animation.KeyframeAnimation;
 
 public class GuiStringSmall extends GuiString {
@@ -52,12 +52,12 @@ public class GuiStringSmall extends GuiString {
     }
 
     @Override
-    public void draw(PoseStack matrixStack, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
+    public void draw(final GuiGraphics graphics, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         activeAnimations.removeIf(keyframeAnimation -> !keyframeAnimation.isActive());
         activeAnimations.forEach(KeyframeAnimation::preDraw);
-        matrixStack.pushPose();
-        matrixStack.scale(.5f, .5f, .5f);
-        drawString(matrixStack, string, refX * 2 + x, refY * 2 + y, color, opacity * getOpacity(), drawShadow);
-        matrixStack.popPose();
+        graphics.pose().pushPose();
+        graphics.pose().scale(.5f, .5f, .5f);
+        drawString(graphics, string, refX * 2 + x, refY * 2 + y, color, opacity * getOpacity(), drawShadow);
+        graphics.pose().popPose();
     }
 }
