@@ -70,8 +70,7 @@ public class GuiTexture extends GuiElement {
                     u * 1f / textureWidth, (u + width) * 1f / textureWidth,
                     v * 1f / textureHeight, (v + height) * 1f / textureHeight,
                     (color >> 16 & 255) / 255f, (color >> 8 & 255) / 255f, (color & 255) / 255f, opacity);
-        }
-        else {
+        } else {
             graphics.blit(textureLocation, x, y, 0, u, v, width, height, textureWidth, textureHeight);
         }
     }
