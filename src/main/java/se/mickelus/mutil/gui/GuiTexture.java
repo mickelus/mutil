@@ -61,17 +61,20 @@ public class GuiTexture extends GuiElement {
 
     protected void drawTexture(final GuiGraphics graphics, ResourceLocation textureLocation, int x, int y, int width, int height,
             int u, int v, int color, float opacity) {
-        if (useDefaultBlending) {
-            RenderSystem.defaultBlendFunc();
-        }
+        // todo 1.20: needs cleanup, simplified rendering with simple params seems to cause flickering during animations, defaultBlendFunc not needed anymore?
+//        if (useDefaultBlending) {
+//            RenderSystem.defaultBlendFunc();
+//        }
 
-        if (color != 0xffffff || opacity != 0) {
-            graphics.innerBlit(textureLocation, x, x + width, y, y + height, 0,
-                    u * 1f / textureWidth, (u + width) * 1f / textureWidth,
-                    v * 1f / textureHeight, (v + height) * 1f / textureHeight,
-                    (color >> 16 & 255) / 255f, (color >> 8 & 255) / 255f, (color & 255) / 255f, opacity);
-        } else {
-            graphics.blit(textureLocation, x, y, 0, u, v, width, height, textureWidth, textureHeight);
-        }
+//        if (color != 0xffffff || opacity != 1) {
+//            if (opacity > 0) {
+                graphics.innerBlit(textureLocation, x, x + width, y, y + height, 0,
+                        u * 1f / textureWidth, (u + width) * 1f / textureWidth,
+                        v * 1f / textureHeight, (v + height) * 1f / textureHeight,
+                        (color >> 16 & 255) / 255f, (color >> 8 & 255) / 255f, (color & 255) / 255f, opacity);
+//            }
+//        } else {
+//            graphics.blit(textureLocation, x, y, 0, u, v, width, height, textureWidth, textureHeight);
+//        }
     }
 }
