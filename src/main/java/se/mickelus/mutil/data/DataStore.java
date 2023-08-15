@@ -11,7 +11,9 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.Environment;
+import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -66,9 +68,16 @@ public class DataStore<V> extends SimplePreparableReloadListener<Map<ResourceLoc
                 JsonElement json;
 
                 if (dataClass.isArray()) {
+                    JsonArray sources = getSources(entry.getValue());
                     json = GsonHelper.fromJson(gson, reader, JsonArray.class);
+                    json.getAsJsonArray().forEach(element -> {
+                        if (element.isJsonObject()) {
+                            element.getAsJsonObject().add("sources", sources);
+                        }
+                    });
                 } else {
                     json = GsonHelper.fromJson(gson, reader, JsonElement.class);
+                    json.getAsJsonObject().add("sources", getSources(entry.getValue()));
                 }
 
                 if (json != null) {
@@ -89,6 +98,23 @@ public class DataStore<V> extends SimplePreparableReloadListener<Map<ResourceLoc
         }
 
         return map;
+    }
+
+    protected JsonArray getSources(Resource resource) {
+        String fileId = resource.sourcePackId();
+        JsonArray result = new JsonArray();
+
+        ModList.get().getModFiles().stream()
+                .filter(modInfo -> fileId.equals(modInfo.getFile().getFileName()))
+                .flatMap(fileInfo -> fileInfo.getMods().stream())
+                .map(IModInfo::getDisplayName)
+                .forEach(result::add);
+
+        if (result.size() == 0) {
+            result.add(fileId);
+        }
+
+        return result;
     }
 
     @Override
