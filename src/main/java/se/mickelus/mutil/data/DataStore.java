@@ -165,8 +165,9 @@ public class DataStore<V> extends SimplePreparableReloadListener<Map<ResourceLoc
     protected boolean shouldLoad(JsonElement json) {
         if (json.isJsonArray()) {
             JsonArray arr = json.getAsJsonArray();
-            if (arr.size() > 0)
+            if (arr.size() > 0) {
                 json = arr.get(0);
+            }
         }
 
         if (!json.isJsonObject()) {
