@@ -20,6 +20,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.JsonOps;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -186,8 +188,33 @@ public class DataStore<V> extends SimplePreparableReloadListener<Map<ResourceLoc
         }
 
         JsonObject jsonObject = json.getAsJsonObject();
-        return !jsonObject.has("conditions")
-                || CraftingHelper.processConditions(GsonHelper.getAsJsonArray(jsonObject, "conditions"), ICondition.IContext.EMPTY);
+//        return !jsonObject.has("conditions")
+//                || CraftingHelper.processConditions(GsonHelper.getAsJsonArray(jsonObject, "conditions"), ICondition.IContext.EMPTY);
+        //TODO: dirty hack & untested, look here for NullPointerExceptions!
+        //WARN
+        return !jsonObject.has("conditions") || processConditions(GsonHelper.getAsJsonArray(jsonObject, "conditions"), ICondition.IContext.EMPTY);
+    }
+    public static boolean processConditions(JsonArray conditions, ICondition.IContext context)
+    {
+        for (int x = 0; x < conditions.size(); x++)
+        {
+            if (!conditions.get(x).isJsonObject())
+                throw new JsonSyntaxException("Conditions must be an array of JsonObjects");
+
+            JsonObject json = conditions.get(x).getAsJsonObject();
+            if (!getCondition(json).test(context))
+                return false;
+        }
+        return true;
+    }
+    public static ICondition getCondition(JsonObject json)
+    {
+        ResourceLocation type = new ResourceLocation(GsonHelper.getAsString(json, "type"));
+//        IConditionSerializer<?> serializer = conditions.get(type);
+//        if (serializer == null)
+//            throw new JsonSyntaxException("Unknown condition type: " + type.toString());
+//        return serializer.read(json);
+        return ICondition.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, null);
     }
 
     protected void processData() {

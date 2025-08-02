@@ -1,5 +1,13 @@
 package se.mickelus.mutil.network;
 
+import java.util.ArrayList;
+import java.util.function.Supplier;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -9,17 +17,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.network.NetworkDirection;
 import net.neoforged.neoforge.network.NetworkEvent;
 import net.neoforged.neoforge.network.NetworkRegistry;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PlayNetworkDirection;
 import net.neoforged.neoforge.network.simple.SimpleChannel;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.function.Supplier;
 
 @ParametersAreNonnullByDefault
 public class PacketHandler {
@@ -69,15 +71,15 @@ public class PacketHandler {
         return true;
     }
 
-    public void onMessage(AbstractPacket message, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            if (ctx.get().getDirection().getReceptionSide().isServer()) {
-                message.handle(ctx.get().getSender());
+    public void onMessage(AbstractPacket message, NetworkEvent.Context ctx) {
+        ctx.enqueueWork(() -> {
+            if (ctx.getDirection().getReceptionSide().isServer()) {
+                message.handle(ctx.getSender());
             } else {
                 message.handle(getClientPlayer());
             }
         });
-        ctx.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -86,7 +88,7 @@ public class PacketHandler {
     }
 
     public void sendTo(AbstractPacket message, ServerPlayer player) {
-        channel.sendTo(message, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        channel.sendTo(message, player.connection.connection, PlayNetworkDirection.PLAY_TO_CLIENT);
     }
 
     public void sendToAllPlayers(AbstractPacket message) {
