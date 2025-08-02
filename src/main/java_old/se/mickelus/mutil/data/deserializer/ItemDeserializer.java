@@ -6,7 +6,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistries;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.reflect.Type;
 

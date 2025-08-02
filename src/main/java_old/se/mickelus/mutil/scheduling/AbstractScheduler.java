@@ -2,7 +2,8 @@ package se.mickelus.mutil.scheduling;
 
 import com.google.common.collect.Queues;
 import net.minecraft.server.TickTask;
-import net.neoforged.neoforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Iterator;
 import java.util.Queue;

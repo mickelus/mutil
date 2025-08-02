@@ -1,8 +1,9 @@
 package se.mickelus.mutil.scheduling;
 
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.TickEvent;
 
 @ParametersAreNonnullByDefault
 public class ServerScheduler extends AbstractScheduler {
