@@ -1,20 +1,19 @@
 package se.mickelus.mutil;
 
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 @ParametersAreNonnullByDefault
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+//@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 class ConfigHandler {
     public static Client client;
     static ModConfigSpec clientSpec;
@@ -23,7 +22,8 @@ class ConfigHandler {
         if (FMLEnvironment.dist.isClient()) {
             setupClient();
             ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, clientSpec);
-            FMLJavaModLoadingContext.get().getModEventBus().register(ConfigHandler.client);
+            //TODO: this might cause issues with config values
+            //FMLJavaModLoadingContext.get().getModEventBus().register(ConfigHandler.client);
         }
     }
 
