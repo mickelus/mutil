@@ -1,7 +1,26 @@
 package se.mickelus.mutil.data;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.common.collect.Maps;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.Resource;
@@ -10,19 +29,11 @@ import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.crafting.CraftingHelper;
-import net.neoforged.neoforge.common.crafting.conditions.ICondition;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import net.neoforged.neoforgespi.Environment;
 import net.neoforged.neoforgespi.language.IModInfo;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @ParametersAreNonnullByDefault
 public class DataStore<V> extends SimplePreparableReloadListener<Map<ResourceLocation, JsonElement>> {

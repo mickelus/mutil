@@ -16,6 +16,6 @@ public class MUtilMod {
 
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
-        Perks.init(Minecraft.getInstance().getUser().getUuid());
+        Perks.init(Minecraft.getInstance().getUser().getSessionId());
     }
 }
