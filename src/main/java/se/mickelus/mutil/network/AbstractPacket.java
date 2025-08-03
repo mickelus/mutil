@@ -1,10 +1,10 @@
 package se.mickelus.mutil.network;
 
+import java.io.IOException;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
-
-import java.io.IOException;
 
 
 /**
@@ -12,18 +12,12 @@ import java.io.IOException;
  * @author sirgingalot, mickelus
  */
 public abstract class AbstractPacket implements CustomPacketPayload {
-
     /**
      * Encode the packet data into the ByteBuf stream. Complex data sets may need specific data handlers (See @link{cpw.mods.fml.common.network.ByteBuffUtils})
      *
      * @param buffer the buffer to encode into
      */
     public abstract void toBytes(FriendlyByteBuf buffer);
-
-	@Override
-	public void write(FriendlyByteBuf buffer) {
-		this.toBytes(buffer);
-	}
 
     /**
      * Decode the packet data from the ByteBuf stream. Complex data sets may need specific data handlers (See @link{cpw.mods.fml.common.network.ByteBuffUtils})
