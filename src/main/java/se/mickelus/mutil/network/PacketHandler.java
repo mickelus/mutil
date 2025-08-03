@@ -1,9 +1,7 @@
 package se.mickelus.mutil.network;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.Supplier;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,28 +15,55 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.network.NetworkEvent;
-import net.neoforged.neoforge.network.NetworkRegistry;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.PlayNetworkDirection;
-import net.neoforged.neoforge.network.simple.SimpleChannel;
+import net.neoforged.neoforge.network.PacketDistributor.TargetPoint;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
 
-@ParametersAreNonnullByDefault
 public class PacketHandler {
     private static final Logger logger = LogManager.getLogger();
 
-    private final SimpleChannel channel;
-    private final ArrayList<Class<? extends AbstractPacket>> packets = new ArrayList<>();
+    private final HashMap<ResourceLocation, Supplier<? extends AbstractPacket>> packets = new HashMap<>();
+    
+    private String modid;
+    private String version;
 
-    public PacketHandler(String namespace, String channelId, String protocolVersion) {
-        channel = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation(namespace, channelId),
-                () -> protocolVersion,
-                protocolVersion::equals,
-                protocolVersion::equals);
-    }
-
-    /**
+	public PacketHandler(String modid, String version) {
+		this.modid = modid;
+		this.version = version;
+	}
+	
+	public void register(final RegisterPayloadHandlerEvent event) {
+		IPayloadRegistrar registrar = event.registrar(modid).versioned(version).optional();
+		for (ResourceLocation id : packets.keySet()) {
+			registrar.play(id, buf -> {
+				AbstractPacket packet = packets.get(id).get();
+				packet.fromBytes(buf);
+				return packet;
+			}, this::onMessage);
+		}
+	}
+	
+	public void onMessage(AbstractPacket message, PlayPayloadContext ctx) {
+//      ctx.enqueueWork(() -> {
+//          if (ctx.getDirection().getReceptionSide().isServer()) {
+//              message.handle(ctx.getSender());
+//          } else {
+//              message.handle(getClientPlayer());
+//          }
+//      });
+//      ctx.setPacketHandled(true);
+		ctx.workHandler().submitAsync(() -> {
+			if (ctx.flow().getReceptionSide().isServer()) {
+				message.handle(ctx.player().get());
+			} else {
+				message.handle(getClientPlayer());
+			}
+		});
+  }
+	
+	/**
      * Register your packet with the pipeline. Discriminators are automatically set.
      *
      * @param packetClass the class to register
@@ -46,64 +71,29 @@ public class PacketHandler {
      *
      * @return whether registration was successful. Failure may occur if 256 packets have been registered or if the registry already contains this packet
      */
-    public <T extends AbstractPacket> boolean registerPacket(Class<T> packetClass, Supplier<T> supplier) {
-        if (packets.size() > 256) {
-            logger.warn("Attempted to register packet but packet list is full: " + packetClass.toString());
-            return false;
-        }
-
-        if (packets.contains(packetClass)) {
-            logger.warn("Attempted to register packet but packet is already in list: " + packetClass.toString());
-            return false;
-        }
-
-        channel.messageBuilder(packetClass, packets.size())
-                .encoder(AbstractPacket::toBytes)
-                .decoder(buffer -> {
-                    T packet = supplier.get();
-                    packet.fromBytes(buffer);
-                    return packet;
-                })
-                .consumerNetworkThread(this::onMessage)
-                .add();
-
-        packets.add(packetClass);
-        return true;
+    public <T extends AbstractPacket> boolean registerPacket(ResourceLocation id, Supplier<T> packet) {
+    	packets.put(id, packet);
+    	return false; //TODO
     }
-
-    public void onMessage(AbstractPacket message, NetworkEvent.Context ctx) {
-        ctx.enqueueWork(() -> {
-            if (ctx.getDirection().getReceptionSide().isServer()) {
-                message.handle(ctx.getSender());
-            } else {
-                message.handle(getClientPlayer());
-            }
-        });
-        ctx.setPacketHandled(true);
-    }
-
     @OnlyIn(Dist.CLIENT)
     private Player getClientPlayer() {
         return Minecraft.getInstance().player;
     }
 
     public void sendTo(AbstractPacket message, ServerPlayer player) {
-        channel.sendTo(message, player.connection.connection, PlayNetworkDirection.PLAY_TO_CLIENT);
+    	PacketDistributor.PLAYER.with(player).send(message);
     }
 
     public void sendToAllPlayers(AbstractPacket message) {
-        channel.send(PacketDistributor.ALL.noArg(), message);
+    	PacketDistributor.ALL.with(null).send(message);
     }
 
     public void sendToAllPlayersNear(AbstractPacket message, BlockPos pos, double r2, ResourceKey<Level> dim) {
-        channel.send(PacketDistributor.NEAR.with(PacketDistributor.TargetPoint.p(pos.getX(), pos.getY(), pos.getZ(), r2, dim)), message);
+    	PacketDistributor.NEAR.with(TargetPoint.p(pos.getX(), pos.getY(), pos.getZ(), r2, dim).get()).send(message);
     }
 
     @OnlyIn(Dist.CLIENT)
     public void sendToServer(AbstractPacket message) {
-        // crashes sometimes happen due to the connection being null
-        if (Minecraft.getInstance().getConnection() != null) {
-            channel.sendToServer(message);
-        }
+    	PacketDistributor.SERVER.with(null).send(message);
     }
 }
