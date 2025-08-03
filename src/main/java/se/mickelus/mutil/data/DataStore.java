@@ -214,7 +214,7 @@ public class DataStore<V> extends SimplePreparableReloadListener<Map<ResourceLoc
 //        if (serializer == null)
 //            throw new JsonSyntaxException("Unknown condition type: " + type.toString());
 //        return serializer.read(json);
-        return ICondition.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, null);
+        return ICondition.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow();
     }
 
     protected void processData() {

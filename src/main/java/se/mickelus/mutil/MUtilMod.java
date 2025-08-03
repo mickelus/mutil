@@ -2,11 +2,12 @@ package se.mickelus.mutil;
 
 import net.minecraft.client.Minecraft;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod(MUtilMod.MOD_ID)
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class MUtilMod {
     public static final String MOD_ID = "mutil";
 
