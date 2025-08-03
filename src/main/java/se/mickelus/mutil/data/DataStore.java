@@ -75,7 +75,7 @@ public class DataStore<V> extends SimplePreparableReloadListener<Map<ResourceLoc
             }
 
             String path = entry.getKey().getPath();
-            ResourceLocation location = new ResourceLocation(entry.getKey().getNamespace(), path.substring(i, path.length() - jsonExtLength));
+            ResourceLocation location = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), path.substring(i, path.length() - jsonExtLength));
 
             try (Reader reader = entry.getValue().openAsReader()) {
                 JsonElement json;
@@ -209,7 +209,7 @@ public class DataStore<V> extends SimplePreparableReloadListener<Map<ResourceLoc
     }
     public static ICondition getCondition(JsonObject json)
     {
-        ResourceLocation type = new ResourceLocation(GsonHelper.getAsString(json, "type"));
+        ResourceLocation type = ResourceLocation.parse(GsonHelper.getAsString(json, "type"));
 //        IConditionSerializer<?> serializer = conditions.get(type);
 //        if (serializer == null)
 //            throw new JsonSyntaxException("Unknown condition type: " + type.toString());

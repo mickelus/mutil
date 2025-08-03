@@ -19,7 +19,7 @@ public class ItemDeserializer implements JsonDeserializer<Item> {
     public Item deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         String string = json.getAsString();
         if (string != null) {
-            ResourceLocation resourceLocation = new ResourceLocation(string);
+            ResourceLocation resourceLocation = ResourceLocation.parse(string);
             if (BuiltInRegistries.ITEM.containsKey(resourceLocation)) {
                 return BuiltInRegistries.ITEM.get(resourceLocation);
             }

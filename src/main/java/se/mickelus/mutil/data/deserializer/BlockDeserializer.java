@@ -19,7 +19,7 @@ public class BlockDeserializer implements JsonDeserializer<Block> {
     public Block deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         String string = json.getAsString();
         if (string != null) {
-            ResourceLocation resourceLocation = new ResourceLocation(string);
+            ResourceLocation resourceLocation = ResourceLocation.parse(string);
             if (BuiltInRegistries.BLOCK.containsKey(resourceLocation)) {
                 return BuiltInRegistries.BLOCK.get(resourceLocation);
             }

@@ -13,7 +13,7 @@ import java.lang.reflect.Type;
 public class ResourceLocationDeserializer implements JsonDeserializer<ResourceLocation> {
 
     public static ResourceLocation deserialize(JsonElement json) throws JsonParseException {
-        return new ResourceLocation(json.getAsString());
+        return ResourceLocation.parse(json.getAsString());
     }
 
     @Override
