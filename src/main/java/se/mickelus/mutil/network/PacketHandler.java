@@ -1,6 +1,5 @@
 package se.mickelus.mutil.network;
 
-import java.util.HashMap;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -26,8 +25,6 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class PacketHandler {
 	private static final Logger logger = LogManager.getLogger();
-
-	private final HashMap<ResourceLocation, Supplier<AbstractPacket>> packets = new HashMap<>();
 
 	private String modid;
 	private String version;

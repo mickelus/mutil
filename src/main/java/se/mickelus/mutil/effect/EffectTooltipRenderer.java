@@ -1,7 +1,10 @@
 package se.mickelus.mutil.effect;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
@@ -10,8 +13,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.extensions.common.IClientMobEffectExtensions;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class EffectTooltipRenderer implements IClientMobEffectExtensions {
     private final Function<MobEffectInstance, String> constructEffectTooltip;
