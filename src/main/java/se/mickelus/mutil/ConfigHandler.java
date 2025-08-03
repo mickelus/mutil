@@ -7,9 +7,8 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 @ParametersAreNonnullByDefault
@@ -18,10 +17,10 @@ class ConfigHandler {
     public static Client client;
     static ModConfigSpec clientSpec;
 
-    public static void setup() {
-        if (FMLEnvironment.dist.isClient()) {
+    public static void setup(ModContainer container, Dist side) {
+        if (side.isClient()) {
             setupClient();
-            ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, clientSpec);
+            container.registerConfig(ModConfig.Type.CLIENT, clientSpec);
             //TODO: this might cause issues with config values
             //FMLJavaModLoadingContext.get().getModEventBus().register(ConfigHandler.client);
         }
