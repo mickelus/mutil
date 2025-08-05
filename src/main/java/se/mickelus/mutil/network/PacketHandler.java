@@ -67,24 +67,32 @@ public class PacketHandler {
 	 * <p>
 	 * Must be called in the context of
 	 * {@link net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent}.
+	 * <br>
+	 * Requires {@link PacketHandler#beginRegistration} to be called beforehand.
 	 *
-	 * @param packetClass the class to register
-	 * @param supplier    A supplier returning an object instance of packetClass
+	 * @param type		the packet's type.
+	 * @param codec		the packet's {@link net.minecraft.network.codec.StreamCodec}.
+	 * @param supplier    A supplier returning an object instance of the packet.
 	 *
 	 * @return whether registration was successful. Failure may occur if 256 packets
 	 *         have been registered or if the registry already contains this packet
 	 */
-	public <T extends AbstractPacket> boolean registerPacket(ResourceLocation id, CustomPacketPayload.Type<T> type,
+	public <T extends AbstractPacket> boolean registerPacket(CustomPacketPayload.Type<T> type,
 			StreamCodec<FriendlyByteBuf, T> codec, Supplier<T> packet) {
 		if (this.registrar == null) {
-			logger.warn("Attempted to register packet outside registration event: " + id.toString());
+			logger.warn("Attempted to register packet outside registration event: " + type.id().toString());
 			return false;
 		} else {
+			try {
 			this.registrar.playBidirectional(type, codec, (payload, context) -> {
 				if (payload instanceof AbstractPacket) {
 					this.onMessage((AbstractPacket)payload, context);
 				}
 			});
+			} catch(UnsupportedOperationException e) {
+				logger.warn("Error while registering packet \""+type.id()+"\": "+e.getMessage());
+				return false;
+			}
 		}
 		return true;
 	}
