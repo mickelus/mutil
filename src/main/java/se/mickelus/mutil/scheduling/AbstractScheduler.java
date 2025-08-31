@@ -1,12 +1,14 @@
 package se.mickelus.mutil.scheduling;
 
-import com.google.common.collect.Queues;
-import net.minecraft.server.TickTask;
-import net.minecraftforge.event.TickEvent;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Iterator;
 import java.util.Queue;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import com.google.common.collect.Queues;
+
+import net.minecraft.server.TickTask;
+import net.neoforged.bus.api.Event;
 
 @ParametersAreNonnullByDefault
 public class AbstractScheduler {
@@ -22,10 +24,7 @@ public class AbstractScheduler {
         queue.add(new Task(id, counter + delay, task));
     }
 
-    public void tick(TickEvent event) {
-        if (event.phase != TickEvent.Phase.END) {
-            return;
-        }
+    public void tick(Event event) {
 
         for (Iterator<Task> it = queue.iterator(); it.hasNext(); ) {
             Task task = it.next();

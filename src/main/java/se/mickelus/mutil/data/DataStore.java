@@ -1,7 +1,28 @@
 package se.mickelus.mutil.data;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.common.collect.Maps;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.JsonOps;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.Resource;
@@ -9,20 +30,12 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.conditions.ICondition;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.forgespi.Environment;
-import net.minecraftforge.forgespi.language.IModInfo;
-import net.minecraftforge.server.ServerLifecycleHooks;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.*;
-import java.util.stream.Collectors;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import net.neoforged.neoforge.common.crafting.CraftingHelper;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforgespi.Environment;
+import net.neoforged.neoforgespi.language.IModInfo;
 
 @ParametersAreNonnullByDefault
 public class DataStore<V> extends SimplePreparableReloadListener<Map<ResourceLocation, JsonElement>> {
@@ -62,7 +75,7 @@ public class DataStore<V> extends SimplePreparableReloadListener<Map<ResourceLoc
             }
 
             String path = entry.getKey().getPath();
-            ResourceLocation location = new ResourceLocation(entry.getKey().getNamespace(), path.substring(i, path.length() - jsonExtLength));
+            ResourceLocation location = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), path.substring(i, path.length() - jsonExtLength));
 
             try (Reader reader = entry.getValue().openAsReader()) {
                 JsonElement json;
@@ -175,8 +188,33 @@ public class DataStore<V> extends SimplePreparableReloadListener<Map<ResourceLoc
         }
 
         JsonObject jsonObject = json.getAsJsonObject();
-        return !jsonObject.has("conditions")
-                || CraftingHelper.processConditions(GsonHelper.getAsJsonArray(jsonObject, "conditions"), ICondition.IContext.EMPTY);
+//        return !jsonObject.has("conditions")
+//                || CraftingHelper.processConditions(GsonHelper.getAsJsonArray(jsonObject, "conditions"), ICondition.IContext.EMPTY);
+        //TODO: dirty hack & untested, look here for NullPointerExceptions!
+        //WARN
+        return !jsonObject.has("conditions") || processConditions(GsonHelper.getAsJsonArray(jsonObject, "conditions"), ICondition.IContext.EMPTY);
+    }
+    public static boolean processConditions(JsonArray conditions, ICondition.IContext context)
+    {
+        for (int x = 0; x < conditions.size(); x++)
+        {
+            if (!conditions.get(x).isJsonObject())
+                throw new JsonSyntaxException("Conditions must be an array of JsonObjects");
+
+            JsonObject json = conditions.get(x).getAsJsonObject();
+            if (!getCondition(json).test(context))
+                return false;
+        }
+        return true;
+    }
+    public static ICondition getCondition(JsonObject json)
+    {
+        ResourceLocation type = ResourceLocation.parse(GsonHelper.getAsString(json, "type"));
+//        IConditionSerializer<?> serializer = conditions.get(type);
+//        if (serializer == null)
+//            throw new JsonSyntaxException("Unknown condition type: " + type.toString());
+//        return serializer.read(json);
+        return ICondition.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow();
     }
 
     protected void processData() {

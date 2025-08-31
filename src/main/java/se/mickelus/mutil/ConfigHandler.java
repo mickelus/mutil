@@ -1,44 +1,43 @@
 package se.mickelus.mutil;
 
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import org.apache.commons.lang3.tuple.Pair;
-
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
+
 @ParametersAreNonnullByDefault
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+//@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 class ConfigHandler {
     public static Client client;
-    static ForgeConfigSpec clientSpec;
+    static ModConfigSpec clientSpec;
 
-    public static void setup() {
-        if (FMLEnvironment.dist.isClient()) {
+    public static void setup(ModContainer container, Dist side) {
+        if (side.isClient()) {
             setupClient();
-            ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, clientSpec);
-            FMLJavaModLoadingContext.get().getModEventBus().register(ConfigHandler.client);
+            container.registerConfig(ModConfig.Type.CLIENT, clientSpec);
+            //TODO: this might cause issues with config values
+            //FMLJavaModLoadingContext.get().getModEventBus().register(ConfigHandler.client);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     private static void setupClient() {
-        final Pair<Client, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Client::new);
+        final Pair<Client, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Client::new);
         clientSpec = specPair.getRight();
         client = specPair.getLeft();
     }
 
     @OnlyIn(Dist.CLIENT)
     public static class Client {
-        public ForgeConfigSpec.BooleanValue queryPerks;
+        public ModConfigSpec.BooleanValue queryPerks;
 
-        Client(ForgeConfigSpec.Builder builder) {
+        Client(ModConfigSpec.Builder builder) {
             queryPerks = builder
                     .comment("Controls if perks data should be queried on startup")
                     .define("query_perks", true);

@@ -1,8 +1,8 @@
 package se.mickelus.mutil.gui;
 
-import net.minecraft.util.Mth;
+import java.awt.Color;
 
-import java.awt.*;
+import net.minecraft.util.Mth;
 
 public class ColorHelper {
     private static int withSaturation(int color, double saturation) {
