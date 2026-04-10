@@ -2,6 +2,7 @@ package se.mickelus.mutil.data;
 
 import com.google.common.collect.Maps;
 import com.google.gson.*;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.Resource;
@@ -9,12 +10,12 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.conditions.ICondition;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.forgespi.Environment;
-import net.minecraftforge.forgespi.language.IModInfo;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.conditions.ConditionalOps;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforgespi.language.IModInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -62,7 +63,7 @@ public class DataStore<V> extends SimplePreparableReloadListener<Map<ResourceLoc
             }
 
             String path = entry.getKey().getPath();
-            ResourceLocation location = new ResourceLocation(entry.getKey().getNamespace(), path.substring(i, path.length() - jsonExtLength));
+            ResourceLocation location = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), path.substring(i, path.length() - jsonExtLength));
 
             try (Reader reader = entry.getValue().openAsReader()) {
                 JsonElement json;
@@ -122,7 +123,7 @@ public class DataStore<V> extends SimplePreparableReloadListener<Map<ResourceLoc
         rawData = splashList;
 
         // PacketHandler dependencies get upset when called upon before the server has started properly
-        if (Environment.get().getDist().isDedicatedServer() && ServerLifecycleHooks.getCurrentServer() != null) {
+        if (FMLEnvironment.dist.isDedicatedServer() && ServerLifecycleHooks.getCurrentServer() != null) {
             syncronizer.sendToAll(directory, rawData);
         }
 
@@ -175,8 +176,12 @@ public class DataStore<V> extends SimplePreparableReloadListener<Map<ResourceLoc
         }
 
         JsonObject jsonObject = json.getAsJsonObject();
-        return !jsonObject.has("conditions")
-                || CraftingHelper.processConditions(GsonHelper.getAsJsonArray(jsonObject, "conditions"), ICondition.IContext.EMPTY);
+        if (jsonObject.has("conditions") && !jsonObject.has(ConditionalOps.DEFAULT_CONDITIONS_KEY)) {
+            jsonObject = jsonObject.deepCopy();
+            jsonObject.add(ConditionalOps.DEFAULT_CONDITIONS_KEY, jsonObject.remove("conditions"));
+        }
+
+        return ICondition.conditionsMatched(JsonOps.INSTANCE, jsonObject);
     }
 
     protected void processData() {

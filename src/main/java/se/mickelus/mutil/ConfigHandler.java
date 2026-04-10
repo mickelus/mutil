@@ -1,44 +1,36 @@
 package se.mickelus.mutil;
 
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 class ConfigHandler {
     public static Client client;
-    static ForgeConfigSpec clientSpec;
+    static ModConfigSpec clientSpec;
 
-    public static void setup() {
+    public static void setup(ModContainer modContainer) {
         if (FMLEnvironment.dist.isClient()) {
             setupClient();
-            ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, clientSpec);
-            FMLJavaModLoadingContext.get().getModEventBus().register(ConfigHandler.client);
+            modContainer.registerConfig(ModConfig.Type.CLIENT, clientSpec);
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     private static void setupClient() {
-        final Pair<Client, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Client::new);
+        final Pair<Client, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Client::new);
         clientSpec = specPair.getRight();
         client = specPair.getLeft();
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static class Client {
-        public ForgeConfigSpec.BooleanValue queryPerks;
+        public ModConfigSpec.BooleanValue queryPerks;
 
-        Client(ForgeConfigSpec.Builder builder) {
+        Client(ModConfigSpec.Builder builder) {
             queryPerks = builder
                     .comment("Controls if perks data should be queried on startup")
                     .define("query_perks", true);

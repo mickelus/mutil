@@ -2,8 +2,8 @@ package se.mickelus.mutil.gui;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
 
 import javax.annotation.Nullable;
 
@@ -23,6 +23,13 @@ public class ToggleableSlot extends SlotItemHandler {
         isEnabled = enabled;
     }
 
+    public void setPosition(int x, int y) {
+        this.x = x;
+        this.y = y;
+        realX = x;
+        realY = y;
+    }
+
     @Override
     public boolean isActive() {
         return isEnabled;
@@ -35,6 +42,6 @@ public class ToggleableSlot extends SlotItemHandler {
 
     @Override
     public boolean mayPlace(@Nullable ItemStack stack) {
-        return isEnabled;
+        return isEnabled && super.mayPlace(stack == null ? ItemStack.EMPTY : stack);
     }
 }

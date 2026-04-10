@@ -1,15 +1,12 @@
 package se.mickelus.mutil.effect;
 
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.extensions.common.IClientMobEffectExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientMobEffectExtensions;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -21,7 +18,6 @@ public class EffectTooltipRenderer implements IClientMobEffectExtensions {
         this.constructEffectTooltip = constructEffectTooltip;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static void renderInventoryEffectTooltip(GuiGraphics graphics, int x, int y, Supplier<Component> tooltip) {
         Minecraft mc = Minecraft.getInstance();
         Window window = mc.getWindow();
