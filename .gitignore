@@ -12,15 +12,25 @@ out
 *.iws
 *.iml
 .idea
+.vscode/
 
 # gradle
-build
-.gradle
+/build/
+/.gradle/
 
 # other
 eclipse
-run
+/run/
+/runs/
+/logs/
 logs/
+*.hprof
+hs_err_pid*
+replay_pid*
+.DS_Store
 
 # Files from Forge MDK
 forge*changelog.txt
+
+# local publishing output
+/repo/

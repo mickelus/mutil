@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
@@ -76,7 +77,7 @@ public class GuiItem extends GuiElement {
     @Override
     public void draw(final GuiGraphics graphics, int refX, int refY, int screenWidth, int screenHeight, int mouseX, int mouseY, float opacity) {
         super.draw(graphics, refX, refY, screenWidth, screenHeight, mouseX, mouseY, opacity);
-        if (opacity * getOpacity() >= opacityThreshold) {
+        if (itemStack != null && opacity * getOpacity() >= opacityThreshold) {
             RenderSystem.applyModelViewMatrix();
             RenderSystem.enableDepthTest();
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
@@ -84,7 +85,7 @@ public class GuiItem extends GuiElement {
             graphics.renderItem(itemStack, refX + x, refY + y);
 
             if (renderDecoration) {
-
+                graphics.renderItemDecorations(mc.font, itemStack, refX + x, refY + y, getCountString());
             }
 
             if (resetDepthTest) {
@@ -109,7 +110,7 @@ public class GuiItem extends GuiElement {
     @Override
     public List<Component> getTooltipLines() {
         if (showTooltip && itemStack != null && hasFocus()) {
-            return new ArrayList<>(itemStack.getTooltipLines(Minecraft.getInstance().player,
+            return new ArrayList<>(itemStack.getTooltipLines(Item.TooltipContext.of(mc.level), Minecraft.getInstance().player,
                     mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL));
         }
 

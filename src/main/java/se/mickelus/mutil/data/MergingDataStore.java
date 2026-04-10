@@ -42,7 +42,7 @@ public abstract class MergingDataStore<V, U> extends DataStore<V> {
             }
 
             String path = entry.getKey().getPath();
-            ResourceLocation location = new ResourceLocation(entry.getKey().getNamespace(), path.substring(i, path.length() - jsonExtLength));
+            ResourceLocation location = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), path.substring(i, path.length() - jsonExtLength));
 
             JsonArray allResources = new JsonArray();
 
