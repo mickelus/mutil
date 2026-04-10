@@ -62,6 +62,7 @@ public class GuiTexture extends GuiElement {
     protected void drawTexture(final GuiGraphics graphics, ResourceLocation textureLocation, int x, int y, int width, int height,
             int u, int v, int color, float opacity) {
         if (useDefaultBlending) {
+            RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
         }
 
